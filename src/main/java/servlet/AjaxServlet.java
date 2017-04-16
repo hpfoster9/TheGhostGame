@@ -1,9 +1,12 @@
 package servlet;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Scanner;
 import java.math.*;
 
 import javax.servlet.ServletException;
@@ -11,6 +14,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 
 /**
  * Servlet implementation class AjaxServlet
@@ -22,15 +26,21 @@ public class AjaxServlet extends HttpServlet {
 	//Keeps track of game "serial number" for when creating new ones
     private static int gameCounter = 0;
     
+    //WorldList
+    public static ArrayList<String> WordList = new ArrayList<String>();
+    
     //Container of active games
     public static ArrayList<Game> gamePool = new ArrayList<Game>();
     /**
+     * @throws FileNotFoundException 
      * @see HttpServlet#HttpServlet()
      */
-    public AjaxServlet() {
+    public AjaxServlet() throws FileNotFoundException {
         super();
+        
         // TODO Auto-generated constructor stub
     }
+    
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
@@ -41,6 +51,10 @@ public class AjaxServlet extends HttpServlet {
 		
 		//Runs when users try to create new game
 		if(request.getParameter("createGame") != null){
+				//initializes WordList if not already created
+				if(WordList.size() == 0){
+					compileWordList();
+				}
 				//Creates game
 				createGame();
 				//Sends the gameID to user for reference
@@ -97,15 +111,26 @@ public class AjaxServlet extends HttpServlet {
 		}
 		
 		//Runs when user submits letter
-		if(request.getParameter("sendLetter") != null && isLetter(request.getParameter("sendLetter"))){
+		if(request.getParameter("sendLetter") != null && isLetter(request.getParameter("letter"))){
 			//Gets the game and the letter
 			Game game = gamePool.get(Integer.valueOf(request.getParameter("gameID")));
 			String letter = request.getParameter("letter");
 			
+			//If the prior word was completed, clear it before adding to it
+			if(game.finishedWord() == true){
+				System.out.println("Word was already complete");
+				game.clearWord();
+			}
 			//Sends the letter to the game
 			sendLetter(game, letter);
 			
+			//check to see if the new word is finished
+			if(game.checkWord()){
+				System.out.println("new word is complete");
+				game.addLetter("*");
+			}
 			//Sends User success msg so they know the letter was added
+			System.out.println("Sucess");
 			response.getWriter().write("Sucess");
 		}
 		
@@ -118,6 +143,23 @@ public class AjaxServlet extends HttpServlet {
 	////////////////////////
 	//** MAIN FUNCTIONS **//
 	////////////////////////
+	
+	//Creates the world list
+	public static void compileWordList() throws FileNotFoundException{
+		System.out.println("Making the word list");
+		
+		String filePath = new File("").getAbsolutePath();
+        Scanner fileScanner = new Scanner(new File(filePath.concat("/src/main/reasources/WordList.txt")));
+        int count = 0;
+        while (fileScanner.hasNextLine()){
+            WordList.add(fileScanner.nextLine());
+            if(count < 2 || WordList.get(WordList.size()-1).length() <= 3){
+                WordList.remove(WordList.size()-1);
+                count++;
+            }
+        }
+        System.out.println("JIEWOJIOEWJFIOWEJFIOWEJFIOWEJIFOW: "+WordList.size());
+    }
 	
 	//Add new instance of the game and increment gameCounter
 	private void createGame(){
@@ -167,7 +209,11 @@ public class AjaxServlet extends HttpServlet {
 	//Checks if the string contains sort sort of letter
 	private boolean isLetter(String letter){
 		char c = letter.charAt(0);
+		if(letter.length() == 1){
 		return Character.isLetter(c);
+		}
+		System.out.println("Failed isletter: "+letter);
+		return false;
 	}
 	
 	//Checks if the string contains only numbers
