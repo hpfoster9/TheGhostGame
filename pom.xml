@@ -1,19 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-<<<<<<< HEAD
   <groupId>ghost</groupId>
   <artifactId>herokutype</artifactId>
   <packaging>war</packaging>
   <version>1.0-SNAPSHOT</version>
   <name>herokutype Maven Webapp</name>
-=======
-  <groupId>com.example</groupId>
-  <artifactId>testest</artifactId>
-  <packaging>war</packaging>
-  <version>1.0-SNAPSHOT</version>
-  <name>testest Maven Webapp</name>
->>>>>>> 183cca5276ba2cdd0edff95a323830a76de3e9d6
   <url>http://maven.apache.org</url>
   <dependencies>
     <dependency>
@@ -22,7 +14,6 @@
       <version>3.8.1</version>
       <scope>test</scope>
     </dependency>
-<<<<<<< HEAD
 <dependency>
     <groupId>javax.servlet</groupId>
     <artifactId>javax.servlet-api</artifactId>
@@ -34,13 +25,6 @@
     <finalName>herokutype</finalName>
 <plugins>
         <plugin>
-=======
-  </dependencies>
-  <build>
-    <finalName>testest</finalName>
-<plugins>
-<plugin>
->>>>>>> 183cca5276ba2cdd0edff95a323830a76de3e9d6
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-dependency-plugin</artifactId>
             <version>2.3</version>
@@ -51,27 +35,16 @@
                     <configuration>
                         <artifactItems>
                             <artifactItem>
-<<<<<<< HEAD
                                 <groupId>com.github.jsimone</groupId>
                                 <artifactId>webapp-runner</artifactId>
                                 <version>8.5.11.3</version>
                                 <destFileName>webapp-runner.jar</destFileName>
-=======
-                         <groupId>com.github.jsimone</groupId>
-                        <artifactId>webapp-runner</artifactId>
-                                <version>8.0.30.2</version>
-                     <destFileName>webapp-runner.jar</destFileName>
->>>>>>> 183cca5276ba2cdd0edff95a323830a76de3e9d6
                             </artifactItem>
                         </artifactItems>
                     </configuration>
                 </execution>
             </executions>
         </plugin>
-<<<<<<< HEAD
     </plugins>
-=======
-</plugins>
->>>>>>> 183cca5276ba2cdd0edff95a323830a76de3e9d6
   </build>
 </project>
