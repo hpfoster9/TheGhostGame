@@ -53,7 +53,7 @@ public class AjaxServlet extends HttpServlet {
 		if(request.getParameter("createGame") != null){
 				//initializes WordList if not already created
 				if(WordList.size() == 0){
-					compileWordList();
+					response.getWriter().write(compileWordList());
 				}
 				//Creates game
 				createGame();
@@ -145,11 +145,12 @@ public class AjaxServlet extends HttpServlet {
 	////////////////////////
 	
 	//Creates the world list
-	public static void compileWordList() throws FileNotFoundException{
+	public static String compileWordList() throws FileNotFoundException{
 		System.out.println("Making the word list");
 		
 		String filePath = new File("").getAbsolutePath();
-        Scanner fileScanner = new Scanner(new File(filePath.concat("/src/main/reasources/WordList.txt")));
+		return filePath;
+        /*Scanner fileScanner = new Scanner(new File(filePath.concat("/src/main/reasources/WordList.txt")));
         int count = 0;
         while (fileScanner.hasNextLine()){
             WordList.add(fileScanner.nextLine());
@@ -159,6 +160,7 @@ public class AjaxServlet extends HttpServlet {
             }
         }
         System.out.println("JIEWOJIOEWJFIOWEJFIOWEJFIOWEJIFOW: "+WordList.size());
+        */
     }
 	
 	//Add new instance of the game and increment gameCounter
