@@ -24,12 +24,15 @@ public class Game {
 	//Keeps track of turn through index in the "players" list
 	private int TURN;
 	
+	private boolean	wordFinished;
+	
 	public Game(int id){
 		this.gameID = id;
 		this.players = new ArrayList<Player>();
 		this.WORD = "";
 		this.COUNTER = 0;
 		this.TURN = 0;
+		this.wordFinished = false;
 	}
 	public void setPassword(String pass){
 		password = pass;
@@ -48,8 +51,6 @@ public class Game {
 			if(players.get(i).getID().equals(id))
 				return i;
 			else{
-				System.out.println("actualID: "+players.get(i).getID());
-				System.out.println("test: "+id);
 			}
 		}
 		
@@ -70,16 +71,27 @@ public class Game {
 	public String getWord(){
 		return WORD;
 	}
+	public void clearWord(){
+		WORD = "";
+	}
+	public boolean checkWord() {
+		String lowerWord = WORD.toLowerCase();
+        if(AjaxServlet.WordList.contains(lowerWord)){
+        	wordFinished = true;
+        	return true;
+        }
+        else{
+        	wordFinished = false;
+        	return false;
+        }
+	}
+	public boolean finishedWord(){
+		return wordFinished;
+	}
 	public void addLetter(String l){
 		WORD += l;
 	}
-	private static String md5(String input) throws NoSuchAlgorithmException{
-		MessageDigest m=MessageDigest.getInstance("MD5");
-	    m.update(input.getBytes(),0,input.length());
-	    String md5 = new BigInteger(1,m.digest()).toString(16);
-	    System.out.println("MD5: "+md5);
-	    return md5;
-	}
+	
 	
 	//Advance the turn by one, if at the game move turn to the front
 	public void takeTurn(){
@@ -93,4 +105,5 @@ public class Game {
 	public String getTurnID(){
 		return players.get(TURN).getID();
 	}
+	
 }
