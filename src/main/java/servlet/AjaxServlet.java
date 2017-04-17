@@ -8,6 +8,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.math.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -147,9 +149,21 @@ public class AjaxServlet extends HttpServlet {
 	//Creates the world list
 	public static String compileWordList() throws FileNotFoundException{
 		System.out.println("Making the word list");
-		
+		String total = "";
 		String filePath = new File("").getAbsolutePath();
-		return filePath;
+		total += filePath + " * ";
+		if(new File(filePath.concat("/src")).exists())
+			total += "/src * ";
+		if(new File(filePath.concat("/main")).exists())
+			total += "/main * ";
+		if(new File(filePath.concat("/java")).exists())
+			total += "/java * ";
+		if(new File(filePath.concat("/servlet")).exists())
+			total += "/servlet * ";
+		if(new File(filePath.concat("/WordList.txt")).exists())
+			total += "/WordList!";
+		
+		return total;
         /*Scanner fileScanner = new Scanner(new File(filePath.concat("/src/main/reasources/WordList.txt")));
         int count = 0;
         while (fileScanner.hasNextLine()){
