@@ -8,6 +8,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.math.*;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -55,7 +57,7 @@ public class AjaxServlet extends HttpServlet {
 		if(request.getParameter("createGame") != null){
 				//initializes WordList if not already created
 				if(WordList.size() == 0){
-					response.getWriter().write(compileWordList());
+					compileWordList();
 				}
 				//Creates game
 				createGame();
@@ -147,34 +149,18 @@ public class AjaxServlet extends HttpServlet {
 	////////////////////////
 	
 	//Creates the world list
-	public static String compileWordList() throws FileNotFoundException{
-		System.out.println("Making the word list");
-		String total = "";
-		String filePath = new File("").getAbsolutePath();
-		total += filePath + " * ";
-		if(new File(filePath.concat("/src")).exists())
-			total += "/src * ";
-		if(new File(filePath.concat("/main")).exists())
-			total += "/main * ";
-		if(new File(filePath.concat("/java")).exists())
-			total += "/java * ";
-		if(new File(filePath.concat("/servlet")).exists())
-			total += "/servlet * ";
-		if(new File(filePath.concat("/WordList.txt")).exists())
-			total += "/WordList!";
-		
-		return total;
-        /*Scanner fileScanner = new Scanner(new File(filePath.concat("/src/main/reasources/WordList.txt")));
-        int count = 0;
+	public static void compileWordList() throws IOException{
+		URL url = new URL("https://github.com/dwyl/english-words/raw/master/words.txt");
+		Scanner fileScanner = new Scanner(url.openStream());
+		int count = 0;
         while (fileScanner.hasNextLine()){
             WordList.add(fileScanner.nextLine());
-            if(count < 2 || WordList.get(WordList.size()-1).length() <= 3){
+            String prev = WordList.get(WordList.size()-1);
+            if(prev.length() <= 3 || prev.contains("'") || prev.matches(".*\\d+.*")){
                 WordList.remove(WordList.size()-1);
                 count++;
             }
         }
-        System.out.println("JIEWOJIOEWJFIOWEJFIOWEJFIOWEJIFOW: "+WordList.size());
-        */
     }
 	
 	//Add new instance of the game and increment gameCounter
