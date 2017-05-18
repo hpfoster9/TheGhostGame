@@ -13,7 +13,7 @@ $(document).ready(function() {
                 var id = $('#idInput').val();
                 GAME_ID = id;
                 $('#idInput').val("");
-                
+                //heyyyyy
                 //Sends postRequest to servlet, to make sure that game exists
                 $.post('AjaxServlet', {
                 		joinGame : "true",
