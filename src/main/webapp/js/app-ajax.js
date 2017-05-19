@@ -5,7 +5,8 @@ $(document).ready(function() {
 		var PLAYER_ID;
 		
 		//Runs when user Joins a game through entering a gameID
-        $('#join').focus(function(event) {
+        $('#joinForm').submit(function(event) {
+        		event.preventDefault();
         		//Sets the users letterInput as disabled by default
         		disableTRUE();
         		
@@ -13,7 +14,7 @@ $(document).ready(function() {
                 var id = $('#idInput').val();
                 GAME_ID = id;
                 $('#idInput').val("");
-                //heyyyyy
+                
                 //Sends postRequest to servlet, to make sure that game exists
                 $.post('AjaxServlet', {
                 		joinGame : "true",
@@ -31,6 +32,7 @@ $(document).ready(function() {
                 			from1to2();
                 		}
                 	});
+                return false;
             });
         
         //Runs when user Creates new game
@@ -48,7 +50,8 @@ $(document).ready(function() {
         });
         
         //Runs when user submits name and password
-        $('#submitNamePassword').click(function(event) {
+        $('#namePasswordForm').submit(function(event) {
+        	event.preventDefault();
         	var n = $('#nameInput').val();
         	var pass = $('#passwordInput').val();
         	$('#nameInput').val("");
@@ -67,16 +70,17 @@ $(document).ready(function() {
             			from2to3();
             			}
             });
+            return false;
         });
         
         //Runs when user submits letter
-        $('#letterButton').click(function(event) {
+        $('#letterForm').submit(function(event) {
         	var letter = $('#letterInput').val();
         	$('#letterInput').val("");
         	//Sends letter and gameID
             $.post('AjaxServlet', {
                     sendLetter: "true",
-                    letter: letter,
+                    letter: letter.toUpperCase(),
                     gameID: GAME_ID
             }, function(responseText) {
             			//If there was some sort of error, notify user
@@ -89,6 +93,7 @@ $(document).ready(function() {
             				disableTRUE();
             			}
             });
+            return false;
         });
         
         //Every 500ms ping the server to update word, turn, and deathCounter
