@@ -108,7 +108,7 @@ public class AjaxServlet extends HttpServlet {
 			Game game = gamePool.get(findGame(gameID));
 
 			//Sends the user the current word and turn-player's ID
-			response.getWriter().write(findWordAndTurn(game));
+			response.getWriter().write(getPingOutput(game));
 			
 			//update the Users' deathCounter
 			updateDeath(gameID, request.getParameter("playerID"));
@@ -126,13 +126,17 @@ public class AjaxServlet extends HttpServlet {
 				game.clearWord();
 			}
 			//Sends the letter to the game
-			sendLetter(game, letter);
+			game.addLetter(letter);
+			
 			
 			//check to see if the new word is finished
 			if(game.checkWord()){
 				System.out.println("new word is complete");
 				game.addLetter("*");
+				game.loseLife();
 			}
+			game.takeTurn();
+			
 			//Sends User success msg so they know the letter was added
 			System.out.println("Sucess");
 			response.getWriter().write("Sucess");
@@ -176,15 +180,12 @@ public class AjaxServlet extends HttpServlet {
 	}
 	
 	//Returns the current word and turn for a game 
-	private String findWordAndTurn(Game game){
-		return game.getWord() + " " + game.getTurnID();
+	private String getPingOutput(Game game){
+		System.out.println("Ran ping output: "+game.getTurnIndex()+" *** "+game.getPlayersString());
+		return game.getWord() + " " + game.getTurnID()+" "+game.getTurnIndex()+game.getPlayersString();
 	}
 
-	//Adds the letter to the word and rotates the turn
-	private void sendLetter(Game game, String letter) {
-		game.addLetter(letter);
-		game.takeTurn();
-	}
+
 	
 	
 	//////////////////////////

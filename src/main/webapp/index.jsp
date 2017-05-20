@@ -107,19 +107,19 @@
        </div>
        
        <div style="overflow-y: scroll; overflow-x: hidden;text-align: center; border-radius: 5px; width: 15%; height: 75vh; position:absolute; top: 20vmin; float: right; right: 5px;  background-color: #E1E1E1; color: #4B4B4B; border-color: #4B4B4B; "> 
+       <!-- *****PLAYER LIST***** -->
        
-       <br/>
-       <br/>
-       <br/>v<br/>
-       <br/>
-       <br/>
-       <br/>
-       <br/><br/>
-       <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-       fewfawfewafe<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-       fewafewaf<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-       fewfewa<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>fewafewafwa
-       <br/><br/><br/><br/>
+        <div class="table-responsive" style="text-align: left;">          
+  <table class="table" id="playerListTable">
+    
+  </table>
+  </div>
+       
+       
+       
+       
+       
+       
        </div>
        <div style="text-align: center; border-radius: 5px; width: 15%; height: 75vh; position:absolute; top: 20vmin; float: left; left: 5px;  background-color: #E1E1E1; color: #4B4B4B; border-color: #4B4B4B; "> 
        
@@ -152,6 +152,7 @@
 	
         <div style="border-radius: 5px; width: 65%; margin: auto; height: 25vh;  margin-top: 1vh; padding-top: 5px; background-color: #E1E1E1; color: #4B4B4B; border-color: #4B4B4B; "> 
        <div style="overflow-y: scroll; overflow-x: wrap; border-radius: 5px; width: 98%; margin: auto; height: 18vh;    background-color: white; color: #4B4B4B; border-color: #4B4B4B; ">
+        <!-- *****CHAT WITHIN GAME***** -->
         <br/>
        <br/>
        <br/>v<br/>

@@ -68,6 +68,13 @@ public class Game {
 	public Player getLastPlayer(){
 		return players.get(players.size()-1);
 	}
+	public String getPlayersString(){
+		String output = "";
+		for(Player p: players){
+			output += " " + p.getName() + " " + p.getLives();
+		}
+		return output;
+	}
 	public String getWord(){
 		return WORD;
 	}
@@ -105,5 +112,10 @@ public class Game {
 	public String getTurnID(){
 		return players.get(TURN).getID();
 	}
-	
+	public int getTurnIndex(){
+		return TURN;
+	}
+	public void loseLife(){
+		players.get(TURN).decreaseLives();
+	}
 }

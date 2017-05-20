@@ -15,6 +15,9 @@ public class Player {
 	public String getName(){
 		return name;
 	}
+	public int getLives(){
+		return lives;
+	}
 	public String getID(){
 		return playerID;
 	}
@@ -29,5 +32,9 @@ public class Player {
 	}
 	public void resetDeath(){
 		deadCounter = 0;
+	}
+	public void decreaseLives() {
+		lives --;
+		
 	}
 }

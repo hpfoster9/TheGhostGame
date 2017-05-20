@@ -110,8 +110,17 @@ $(document).ready(function() {
                 	//Gets info and updates client
             		var inputArray = responseText.split(" ");
             		var word = inputArray[0];
-            		var turnID = inputArray[1]
+            		var turnID = inputArray[1];
+            		var turnIndex = inputArray[2];
+            		console.log("in response function");
+            		console.log(inputArray);
+            		console.log("word: "+word);
+            		console.log("turnID: "+turnID);
+            		console.log("turnIndex" +turnIndex);
+            		inputArray.splice(0,3);
+            		console.log(inputArray);
                     $('#mainMsg').text(word);
+                    $('#playerListTable').html(createTable(inputArray,turnIndex));
             		if(turnID == PLAYER_ID){
             			disableFALSE();
             		}
@@ -121,7 +130,32 @@ $(document).ready(function() {
         
         
         //** HELPER FUNCTIONS **//
-        
+        //Creates the table with playerList
+        function createTable(list, turnIndex){
+        	console.log("refreshed table");
+        	console.log(list);
+        	console.log(turnIndex);
+        	var tableHTML = "<thead><tr><th>Turn</th><th>Name</th><th>Lives</th></tr></thead> <tbody>";
+        	for(var i=0; i<list.length; i+= 2){
+        		console.log(list.length);
+        		console.log(i+": "+tableHTML);
+        		tableHTML += "<tr>";
+        		
+        		if(turnIndex == i/2){
+        			tableHTML += "<td style='width: 20%;'><img src='http://www.freepngimg.com/download/ghost/1-2-ghost-png-pic.png' style='width: 100%;'></td>";
+        			console.log("put ghost at index: "+i/2);
+        		}
+        		else{
+        			tableHTML += "<td></td>";
+        			console.log("didn't put ghost at index: "+(i/2));
+        		}
+        		tableHTML += "<td>"+list[i]+"</td>";
+        		tableHTML += "<td> Lives: "+list[i+1]+"</td>";
+        		tableHTML += "</tr>";
+        	};
+        	tableHTML += "</tbody>";
+        	return tableHTML;
+        };
         //Disables users input field 
     	function disableTRUE(){
     		  $('#letterInput').prop("disabled", true);
@@ -140,6 +174,6 @@ $(document).ready(function() {
         	$("#namePassword").attr("hidden","true");
         	$("#gameBoard").removeAttr("hidden");
         	setInterval( ping, 500 );
-        }
+        };
         
 });
