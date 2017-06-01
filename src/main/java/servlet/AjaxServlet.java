@@ -54,11 +54,16 @@ public class AjaxServlet extends HttpServlet {
 		response.setContentType("text/plain");
 		
 		//Runs when users try to create new game
+		if(request.getParameter("initialize") != null){
+			//initializes WordList if not already created
+			System.out.println("Inside the initialize function");
+			if(WordList.size() == 0){
+				compileWordList();
+				System.out.println("Finished making the word list");
+			}
+		}
+		//Runs when users try to create new game
 		if(request.getParameter("createGame") != null){
-				//initializes WordList if not already created
-				if(WordList.size() == 0){
-					compileWordList();
-				}
 				//Creates game
 				createGame();
 				//Sends the gameID to user for reference
@@ -120,27 +125,87 @@ public class AjaxServlet extends HttpServlet {
 			Game game = gamePool.get(Integer.valueOf(request.getParameter("gameID")));
 			String letter = request.getParameter("letter");
 			
-			//If the prior word was completed, clear it before adding to it
-			if(game.finishedWord() == true){
-				System.out.println("Word was already complete");
-				game.clearWord();
-			}
+			
 			//Sends the letter to the game
 			game.addLetter(letter);
 			
 			
-			//check to see if the new word is finished
-			if(game.checkWord()){
-				System.out.println("new word is complete");
-				game.addLetter("*");
-				game.loseLife();
-			}
 			game.takeTurn();
 			
 			//Sends User success msg so they know the letter was added
 			System.out.println("Sucess");
 			response.getWriter().write("Sucess");
 		}
+		
+		
+		//Runs when user clicks "That's a word"
+		if(request.getParameter("checkWord") != null){
+			//Gets the game
+			Game game = gamePool.get(Integer.valueOf(request.getParameter("gameID")));
+			//Get current and previous players
+			Player prev = game.getPreviousPlayer();
+			Player curr = game.getPlayer(game.getTurnIndex());
+			
+			if(game.checkWord()){
+				//The word is a word, so decrement previous players lives
+				prev.decreaseLives();
+				game.setUpdateMsg(curr.getName()+ " thinks "+game.getWord()+" is a word~"+game.getWord()+" is a word~"+prev.getName()+" lost a life");
+			}
+			else{
+				//The word isn't a word, so decrement current players lives
+				curr.decreaseLives();
+				game.setUpdateMsg(curr.getName()+ " thinks "+game.getWord()+" is a word~"+game.getWord()+" is not a word~"+curr.getName()+" lost a life");
+			}
+			//Clear the word
+			System.out.println("CLEARED THE WORD FROM CHECKWORD");
+			game.clearWord();
+			//Change updateIndex
+			game.incrementUpdateIndex();
+		}
+		
+		
+		//Runs when the user clicks challenge
+		if(request.getParameter("challengeRequest") != null){
+			//Gets the game
+			Game game = gamePool.get(Integer.valueOf(request.getParameter("gameID")));
+			//Get current and previous players
+			Player prev = game.getPreviousPlayer();
+			game.setChallengeID(prev.getID());
+			//game.takeBackTurn();
+		}
+		
+		//Runs when the user submits the modal after being challenged
+				if(request.getParameter("challengeResponse") != null){
+					//Gets the game
+					Game game = gamePool.get(Integer.valueOf(request.getParameter("gameID")));
+					//Get current and previous players
+					Player prev = game.getPreviousPlayer();
+					Player curr = game.getPlayer(game.getTurnIndex());
+					String testWord = request.getParameter("word").toLowerCase();
+					String realWord = game.getWord().toLowerCase();
+					
+					//If the inputed word is a word and it starts with the word on the board
+					if(WordList.contains(testWord) && testWord.startsWith(realWord)){
+						System.out.println("CHALLENGE ANSWER WAS A WORD");
+						curr.decreaseLives();
+						game.setUpdateMsg(curr.getName()+ " challenges "+prev.getName()+"~"+testWord.toUpperCase()+" is a word~"+curr.getName()+" lost a life");
+					}
+					//The word isn't a word, so decrement current players lives
+					else{
+						System.out.println("CHALLENGE ANSWER WAS NOT A WORD");
+						prev.decreaseLives();
+						game.setUpdateMsg(curr.getName()+ " challenges "+prev.getName()+"~"+testWord.toUpperCase()+" is not a word~"+prev.getName()+" lost a life");
+					}
+					System.out.println("testWord: "+testWord);
+					System.out.println("realWord: "+realWord);
+					//Clear the word
+					System.out.println("CLEARED THE WORD FROM ChallengeResponse");
+					game.clearWord();
+					game.resetChallengeID();
+					//Change updateIndex
+					game.incrementUpdateIndex();
+				}
+		
 		
 		//if none of the if statements work, notify user there was a problem with the input
 		else{
@@ -181,8 +246,8 @@ public class AjaxServlet extends HttpServlet {
 	
 	//Returns the current word and turn for a game 
 	private String getPingOutput(Game game){
-		System.out.println("Ran ping output: "+game.getTurnIndex()+" *** "+game.getPlayersString());
-		return game.getWord() + " " + game.getTurnID()+" "+game.getTurnIndex()+game.getPlayersString();
+		System.out.println("Ran ping output: "+game.getWord() + " " + game.getTurnID()+" "+game.getTurnIndex()+game.getPlayersString()+"|"+game.getUpdateMsg()+"*"+game.getUpdateIndex()+"*"+game.getChallengeID());
+		return game.getWord() + " " + game.getTurnID()+" "+game.getTurnIndex()+game.getPlayersString()+"|"+game.getUpdateMsg()+"*"+game.getUpdateIndex()+"*"+game.getChallengeID();
 	}
 
 

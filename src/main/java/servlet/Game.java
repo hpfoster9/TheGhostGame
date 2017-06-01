@@ -24,6 +24,15 @@ public class Game {
 	//Keeps track of turn through index in the "players" list
 	private int TURN;
 	
+	//Most recent Update Message
+	private String updateMsg;
+	
+	//Most recent Update Index
+	private int updateIndex;
+	
+	//ID of player that is being challenged
+	private String challengeID;
+	
 	private boolean	wordFinished;
 	
 	public Game(int id){
@@ -33,6 +42,9 @@ public class Game {
 		this.COUNTER = 0;
 		this.TURN = 0;
 		this.wordFinished = false;
+		this.updateMsg = "";
+		this.updateIndex = 0;
+		this.challengeID = "false";
 	}
 	public void setPassword(String pass){
 		password = pass;
@@ -67,6 +79,14 @@ public class Game {
 	}
 	public Player getLastPlayer(){
 		return players.get(players.size()-1);
+	}
+	public Player getPreviousPlayer(){
+		if(TURN == 0){
+			return getLastPlayer();
+		}
+		else{
+			return players.get(TURN-1);
+		}
 	}
 	public String getPlayersString(){
 		String output = "";
@@ -107,7 +127,14 @@ public class Game {
 		else{
 			TURN++;
 		}
-		
+	}
+	public void takeBackTurn(){
+		if(TURN == 0){
+			TURN = players.size()-1;
+		}
+		else{
+			TURN--;
+		}
 	}
 	public String getTurnID(){
 		return players.get(TURN).getID();
@@ -118,4 +145,26 @@ public class Game {
 	public void loseLife(){
 		players.get(TURN).decreaseLives();
 	}
+	public String getUpdateMsg(){
+		return updateMsg;
+	}
+	public int getUpdateIndex(){
+		return updateIndex;
+	}
+	public void setUpdateMsg(String text){
+		updateMsg = text;
+	}
+	public void incrementUpdateIndex(){
+		updateIndex++;
+	}
+	public void setChallengeID(String id){
+		challengeID = id;
+	}
+	public void resetChallengeID(){
+		challengeID = "false";
+	}
+	public String getChallengeID(){
+		return challengeID;
+	}
+	
 }
