@@ -20,6 +20,44 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
+/*
+READ FIRST
+
+This is the main "server" file which acts to take messages from the clients and responds appropriately
+
+Because the server can only respond and not initiate the messages, the client always sends its requests with three things:
+	The game id
+	A Player id
+	A keyword 
+	
+The gameid is used the find the specific instance of the game and the playerid is used to find the specific player linked to the client
+The keyword is used to tell the server what information is needed to be sent
+
+Once in the game, each player "pings" every .5 seconds to update the client with any information
+
+Other information and keywords are triggered client side on button presses 
+
+
+Information about how the play the game that this project is based on can be found here: https://en.wikipedia.org/wiki/Ghost_(game)
+
+
+Also the word list that I used is here: https://github.com/dwyl/english-words/raw/master/words.txt
+And is "free and unencumbered software released into the public domain"
+
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
 /**
  * Servlet implementation class AjaxServlet
  */
@@ -30,19 +68,16 @@ public class AjaxServlet extends HttpServlet {
 	//Keeps track of game "serial number" for when creating new ones
     private static int gameCounter = 0;
     
-    //WorldList
+    //List of every English word
     public static ArrayList<String> WordList = new ArrayList<String>();
     
     //Container of active games
     public static ArrayList<Game> gamePool = new ArrayList<Game>();
     /**
-     * @throws FileNotFoundException 
      * @see HttpServlet#HttpServlet()
      */
-    public AjaxServlet() throws FileNotFoundException {
+    public AjaxServlet(){
         super();
-        
-        // TODO Auto-generated constructor stub
     }
     
 
@@ -56,10 +91,8 @@ public class AjaxServlet extends HttpServlet {
 		//Runs when users try to create new game
 		if(request.getParameter("initialize") != null){
 			//initializes WordList if not already created
-			System.out.println("Inside the initialize function");
 			if(WordList.size() == 0){
 				compileWordList();
-				System.out.println("Finished making the word list");
 			}
 		}
 		//Runs when users try to create new game
@@ -70,7 +103,7 @@ public class AjaxServlet extends HttpServlet {
 				response.getWriter().write(Integer.toString(gameCounter-1));
 		}
 		
-		//Runs when users try to join a game with an id
+		//Runs when users try to join a game with a game id
 		if(request.getParameter("joinGame") != null && isInteger(request.getParameter("gameID"))){
 			//Sends the index, checks if game exists
 			response.getWriter().write(Integer.toString(findGame(Integer.parseInt(request.getParameter("gameID")))));
@@ -133,7 +166,6 @@ public class AjaxServlet extends HttpServlet {
 			game.takeTurn();
 			
 			//Sends User success msg so they know the letter was added
-			System.out.println("Sucess");
 			response.getWriter().write("Sucess");
 		}
 		
@@ -157,7 +189,6 @@ public class AjaxServlet extends HttpServlet {
 				game.setUpdateMsg(curr.getName()+ " thinks "+game.getWord()+" is a word~"+game.getWord()+" is not a word~"+curr.getName()+" lost a life");
 			}
 			//Clear the word
-			System.out.println("CLEARED THE WORD FROM CHECKWORD");
 			game.clearWord();
 			//Change updateIndex
 			game.incrementUpdateIndex();
@@ -170,41 +201,39 @@ public class AjaxServlet extends HttpServlet {
 			Game game = gamePool.get(Integer.valueOf(request.getParameter("gameID")));
 			//Get current and previous players
 			Player prev = game.getPreviousPlayer();
+			//Assigns the challengeID so the clients know who is being challenged
 			game.setChallengeID(prev.getID());
-			//game.takeBackTurn();
 		}
 		
 		//Runs when the user submits the modal after being challenged
-				if(request.getParameter("challengeResponse") != null){
-					//Gets the game
-					Game game = gamePool.get(Integer.valueOf(request.getParameter("gameID")));
-					//Get current and previous players
-					Player prev = game.getPreviousPlayer();
-					Player curr = game.getPlayer(game.getTurnIndex());
-					String testWord = request.getParameter("word").toLowerCase();
-					String realWord = game.getWord().toLowerCase();
-					
-					//If the inputed word is a word and it starts with the word on the board
-					if(WordList.contains(testWord) && testWord.startsWith(realWord)){
-						System.out.println("CHALLENGE ANSWER WAS A WORD");
-						curr.decreaseLives();
-						game.setUpdateMsg(curr.getName()+ " challenges "+prev.getName()+"~"+testWord.toUpperCase()+" is a word~"+curr.getName()+" lost a life");
-					}
-					//The word isn't a word, so decrement current players lives
-					else{
-						System.out.println("CHALLENGE ANSWER WAS NOT A WORD");
-						prev.decreaseLives();
-						game.setUpdateMsg(curr.getName()+ " challenges "+prev.getName()+"~"+testWord.toUpperCase()+" is not a word~"+prev.getName()+" lost a life");
-					}
-					System.out.println("testWord: "+testWord);
-					System.out.println("realWord: "+realWord);
-					//Clear the word
-					System.out.println("CLEARED THE WORD FROM ChallengeResponse");
-					game.clearWord();
-					game.resetChallengeID();
-					//Change updateIndex
-					game.incrementUpdateIndex();
-				}
+		if(request.getParameter("challengeResponse") != null){
+			//Gets the game
+			Game game = gamePool.get(Integer.valueOf(request.getParameter("gameID")));
+			//Get current and previous players
+			Player prev = game.getPreviousPlayer();
+			Player curr = game.getPlayer(game.getTurnIndex());
+			//Gets the word entered by the person being challenged
+			String testWord = request.getParameter("word").toLowerCase();
+			//Gets the word currently on the board
+			String realWord = game.getWord().toLowerCase();
+			
+			//If the inputed word is a word and it starts with the word on the board
+			if(WordList.contains(testWord) && testWord.startsWith(realWord)){
+				curr.decreaseLives();
+				game.setUpdateMsg(curr.getName()+ " challenges "+prev.getName()+"~"+testWord.toUpperCase()+" is a word~"+curr.getName()+" lost a life");
+			}
+			//The word isn't a word, so decrement previous player's lives
+			else{
+				prev.decreaseLives();
+				game.setUpdateMsg(curr.getName()+ " challenges "+prev.getName()+"~"+testWord.toUpperCase()+" is not a word~"+prev.getName()+" lost a life");
+			}
+			//Clear the word
+			game.clearWord();
+			//Resets the challengeID so the clients know there is not currently a challenge
+			game.resetChallengeID();
+			//Change updateIndex
+			game.incrementUpdateIndex();
+		}
 		
 		
 		//if none of the if statements work, notify user there was a problem with the input
@@ -217,17 +246,27 @@ public class AjaxServlet extends HttpServlet {
 	//** MAIN FUNCTIONS **//
 	////////////////////////
 	
+	/*
+	Current question I have
+	Right now I have almost everything being run out of the DoPost method
+	Would it make sense to just have each of those if statements (i.e. if("sendLetter" != null){}) run an external function down here
+	
+	For instance, I did that with the create game if statement. When a client send a post request with the parameter "createGame" 
+	it runs the if statement within the doPost and then calls an external method called "createGame()" down here to actually create the game.
+	I don't know to what extent I should compartmentalize my code like this
+	 
+	*/
+	
 	//Creates the world list
 	public static void compileWordList() throws IOException{
 		URL url = new URL("https://github.com/dwyl/english-words/raw/master/words.txt");
 		Scanner fileScanner = new Scanner(url.openStream());
-		int count = 0;
         while (fileScanner.hasNextLine()){
             WordList.add(fileScanner.nextLine());
             String prev = WordList.get(WordList.size()-1);
+            //This if statement filters out words that are fewer than 3 letters, or have apostrophes in it
             if(prev.length() <= 3 || prev.contains("'") || prev.matches(".*\\d+.*")){
                 WordList.remove(WordList.size()-1);
-                count++;
             }
         }
     }
@@ -244,10 +283,17 @@ public class AjaxServlet extends HttpServlet {
 		return game.getLastPlayer().getID();
 	}
 	
-	//Returns the current word and turn for a game 
+	//Returns the: game word, turn id, list of players and lives, update message, update index, id of the person being challenged (if applicable)  
+	//I have used special characters (   , | , * ) to separate the different bits of information for the client the parse later
 	private String getPingOutput(Game game){
-		System.out.println("Ran ping output: "+game.getWord() + " " + game.getTurnID()+" "+game.getTurnIndex()+game.getPlayersString()+"|"+game.getUpdateMsg()+"*"+game.getUpdateIndex()+"*"+game.getChallengeID());
-		return game.getWord() + " " + game.getTurnID()+" "+game.getTurnIndex()+game.getPlayersString()+"|"+game.getUpdateMsg()+"*"+game.getUpdateIndex()+"*"+game.getChallengeID();
+		return 
+				game.getWord() + " " + 
+				game.getTurnID()+" "+
+				game.getTurnIndex()+
+				game.getPlayersString()+"|"+
+				game.getUpdateMsg()+"*"+
+				game.getUpdateIndex()+"*"+
+				game.getChallengeID();
 	}
 
 
@@ -266,7 +312,7 @@ public class AjaxServlet extends HttpServlet {
 		return -1;
 	}
 	
-	//Creates fingerprint for string
+	//Creates fingerprint for string, this was a standard md5 hashing method I found on stack overflow
 	public static String md5(String input) throws NoSuchAlgorithmException{
 		MessageDigest m=MessageDigest.getInstance("MD5");
 	    m.update(input.getBytes(),0,input.length());
@@ -274,13 +320,12 @@ public class AjaxServlet extends HttpServlet {
 	    return md5;
 	}
 	
-	//Checks if the string contains sort sort of letter
+	//Checks if the string (should only be one letter long) is a letter
 	private boolean isLetter(String letter){
 		char c = letter.charAt(0);
 		if(letter.length() == 1){
 		return Character.isLetter(c);
 		}
-		System.out.println("Failed isletter: "+letter);
 		return false;
 	}
 	

@@ -27,13 +27,14 @@ public class Game {
 	//Most recent Update Message
 	private String updateMsg;
 	
-	//Most recent Update Index
+	/*
+	     This is an index of the most recent update, it is incremented every time there is a 
+	     new update so the client knows when it is out of sync with the server
+	*/
 	private int updateIndex;
 	
 	//ID of player that is being challenged
 	private String challengeID;
-	
-	private boolean	wordFinished;
 	
 	public Game(int id){
 		this.gameID = id;
@@ -41,39 +42,47 @@ public class Game {
 		this.WORD = "";
 		this.COUNTER = 0;
 		this.TURN = 0;
-		this.wordFinished = false;
 		this.updateMsg = "";
 		this.updateIndex = 0;
 		this.challengeID = "false";
 	}
+	
+	
+	
+	/*
+	    PASSWORD METHODS
+	*/
 	public void setPassword(String pass){
 		password = pass;
 	}
 	public String getPassword(){
 		return password;
 	}
-	//Add a new player by name and then advance the counter by 1
-	public void addPlayer(String name) throws NoSuchAlgorithmException{
-		players.add(new Player(name, AjaxServlet.md5(Integer.toString(COUNTER))));
-		COUNTER++;
-	}
+	
+	
+	
+	/*
+  	    PLAYER METHODS
+	*/
 	//Finds the index of the player through playerID
 	public int findPlayer(String id){
 		for(int i = 0; i<players.size(); i++){
 			if(players.get(i).getID().equals(id))
 				return i;
-			else{
-			}
 		}
 		
 		return -1;
 	}
-	public int getID(){
-		return gameID;
+	//Add a new player by name and then advance the counter by 1
+	public void addPlayer(String name) throws NoSuchAlgorithmException{
+		players.add(new Player(name, AjaxServlet.md5(Integer.toString(COUNTER))));
+		COUNTER++;
 	}
+	//Returns all players within a game
 	public ArrayList<Player> getPlayers(){
 		return players;
 	}
+	//Returns specific player based on index
 	public Player getPlayer(int index){
 		return players.get(index);
 	}
@@ -88,6 +97,7 @@ public class Game {
 			return players.get(TURN-1);
 		}
 	}
+	//Generates a string of players and their lives to output to the clients screen
 	public String getPlayersString(){
 		String output = "";
 		for(Player p: players){
@@ -95,31 +105,37 @@ public class Game {
 		}
 		return output;
 	}
+	
+	
+	
+	/*
+	    WORD METHODS
+	*/
+	public void addLetter(String letter){
+		WORD += letter;
+	}
 	public String getWord(){
 		return WORD;
 	}
 	public void clearWord(){
 		WORD = "";
 	}
+	//Returns whether or not the WORD is within the word list
 	public boolean checkWord() {
 		String lowerWord = WORD.toLowerCase();
         if(AjaxServlet.WordList.contains(lowerWord)){
-        	wordFinished = true;
         	return true;
         }
         else{
-        	wordFinished = false;
         	return false;
         }
 	}
-	public boolean finishedWord(){
-		return wordFinished;
-	}
-	public void addLetter(String l){
-		WORD += l;
-	}
 	
 	
+	
+	/*
+	    TURN METHODS 
+	*/
 	//Advance the turn by one, if at the game move turn to the front
 	public void takeTurn(){
 		if(TURN == players.size()-1 )
@@ -128,6 +144,7 @@ public class Game {
 			TURN++;
 		}
 	}
+	//Moves the turn index back by 1
 	public void takeBackTurn(){
 		if(TURN == 0){
 			TURN = players.size()-1;
@@ -136,15 +153,19 @@ public class Game {
 			TURN--;
 		}
 	}
+	//Returns the playerID of the person whose turn it is
 	public String getTurnID(){
 		return players.get(TURN).getID();
 	}
 	public int getTurnIndex(){
 		return TURN;
 	}
-	public void loseLife(){
-		players.get(TURN).decreaseLives();
-	}
+	
+	
+	
+	/*
+	    UPDATE METHODS 
+	*/
 	public String getUpdateMsg(){
 		return updateMsg;
 	}
@@ -157,6 +178,12 @@ public class Game {
 	public void incrementUpdateIndex(){
 		updateIndex++;
 	}
+	
+	
+	
+	/*
+	    CHALLENGE METHODS
+	*/
 	public void setChallengeID(String id){
 		challengeID = id;
 	}
@@ -167,4 +194,15 @@ public class Game {
 		return challengeID;
 	}
 	
+	
+	
+	/*
+	    GENERAL METHODS
+	*/
+	public void loseLife(){
+		players.get(TURN).decreaseLives();
+	}
+	public int getID(){
+		return gameID;
+	}
 }
