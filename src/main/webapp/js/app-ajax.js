@@ -1,4 +1,4 @@
-//** This is the js for the client to run :p**//
+//** This is the js for the client to run :p ***//
 
 $(document).ready(function() {
 		//Used to identify the User's game by ID
