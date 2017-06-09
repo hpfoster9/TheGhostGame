@@ -9,6 +9,8 @@ public class Game {
 	//Unique number to reference each game with
 	private int gameID;
 	
+	//Hash of the gameID;
+	private String gameHash;
 	//A "hashed" password to be set upon game creation
 	private String password = "";
 	
@@ -36,8 +38,9 @@ public class Game {
 	//ID of player that is being challenged
 	private String challengeID;
 	
-	public Game(int id){
+	public Game(int id) throws NoSuchAlgorithmException{
 		this.gameID = id;
+		this.gameHash = AjaxServlet.md5("g"+Integer.toString(id)).substring(0, 6);
 		this.players = new ArrayList<Player>();
 		this.WORD = "";
 		this.COUNTER = 0;
@@ -75,7 +78,7 @@ public class Game {
 	}
 	//Add a new player by name and then advance the counter by 1
 	public void addPlayer(String name) throws NoSuchAlgorithmException{
-		players.add(new Player(name, AjaxServlet.md5(Integer.toString(COUNTER))));
+		players.add(new Player(name, AjaxServlet.md5("p"+Integer.toString(COUNTER)).substring(0, 6)));
 		COUNTER++;
 	}
 	//Returns all players within a game
@@ -105,7 +108,14 @@ public class Game {
 		}
 		return output;
 	}
-	
+	//Checks if all players are ready
+	public boolean gameReady(){
+		for(Player p: players){
+			if(!p.isReady())
+				return false;
+		}
+		return true;
+	}
 	
 	
 	/*
@@ -123,6 +133,8 @@ public class Game {
 	//Returns whether or not the WORD is within the word list
 	public boolean checkWord() {
 		String lowerWord = WORD.toLowerCase();
+		System.out.println("Checkword test: "+lowerWord);
+		System.out.println(AjaxServlet.WordList.size());
         if(AjaxServlet.WordList.contains(lowerWord)){
         	return true;
         }
@@ -204,5 +216,8 @@ public class Game {
 	}
 	public int getID(){
 		return gameID;
+	}
+	public String getHash(){
+		return gameHash;
 	}
 }

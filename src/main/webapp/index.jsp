@@ -61,6 +61,46 @@
         </div>
         
         
+        <div id="gameLobby" hidden >
+            <h1 class="title">The Ghost Game</h1>
+            <br/>
+            <div id="timerContainer"> 
+            </div>
+            <div id="rulesContainer"> 
+            </div>
+            <div id="playersContainerLobby">
+                
+                <div class="table-responsive" id="playersInnerDivLobby">
+                    <table class="table" id="playerListTableLobby">
+                    </table>
+                </div>
+            </div>
+            <div  id="ads" > 
+            </div>
+            <div id="outerMsgContainerLobby">
+                <div id="innerMsgContainerLobby">
+                	<div id="updateMsgLobby">
+                	WELCOME TO THE GAME LOBBY
+                	<div id="gameHashLobby"></div>
+                    <div id="mainMsgLobby"></div>
+                    <div class="table-responsive" id="readyPlayersDiv" >          
+						  <table class="table" id="lobbyPingTable">
+						  </table>
+  					</div>
+  					<div id="gameAboutToStart"></div>
+                    <p id="errorMsgLobby"></p>
+                    </div>
+                </div>
+                
+                        <button type="submit" class="btn btn-primary" id="readyUp">Ready Up!</button>
+
+            </div>
+        </div>
+        
+        
+        
+        
+        
         
         <div id="gameBoard" hidden >
             <h1 class="title">The Ghost Game</h1>
