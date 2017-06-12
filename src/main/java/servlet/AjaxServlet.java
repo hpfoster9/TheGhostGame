@@ -99,6 +99,10 @@ public class AjaxServlet extends HttpServlet {
 						break;
 			case "lobbyReady": //post
 						lobbyReady(request, response);
+						break;
+			case "chat":
+						chat(request, response);
+						break;
 			default:
 						response.getWriter().write("");
 						break;
@@ -267,7 +271,7 @@ public class AjaxServlet extends HttpServlet {
 		response.getWriter().write(getPingOutput(game));
 		
 		//update the Users' deathCounter
-		updateDeath(gameHash, request.getParameter("playerID"));
+		updateDeath(gameHash, request.getParameter("playerId"));
 	}
 	
 	//p
@@ -357,6 +361,19 @@ public class AjaxServlet extends HttpServlet {
 		game.incrementUpdateIndex();
 	}
 	
+	
+	//p
+	public void chat(HttpServletRequest request, HttpServletResponse response){
+		System.out.println("RAN THE CHAT FUNCTION");
+		//Gets the game
+		Game game = gamePool.get(findGame(request.getParameter("gameHash")));
+		
+		Player player = game.getPlayer(game.findPlayer(request.getParameter("playerId")));
+		
+		game.setUpdateMsg("&~"+player.getName()+"~"+request.getParameter("msg"));
+		System.out.println(game.getUpdateMsg());
+		game.incrementUpdateIndex();
+	}
 
 	
 	

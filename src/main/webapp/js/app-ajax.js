@@ -161,7 +161,7 @@ $(document).ready(function() {
             return false;
         });
         
-        //if the user presses the 'X' in the modal
+        //if the user presses the 'X' in the modal ******************STILL NEED TO UPDATE THIS SERVERSIDE****************************
         $('#modalX').click(function(event) {
         	
         	$('#challengeInput').val("");
@@ -175,18 +175,31 @@ $(document).ready(function() {
             $('#myModal').modal('hide');
         });
         
-        
         //Every 500ms ping the server to update word, turn, and deathCounter
         function ping(){
         	//Sends postRequest to finds info about game
             sendMessage("get",{
             	key: "ping",
             	gameHash: GAME_HASH,
-            	playerID: PLAYER_ID
+            	playerId: PLAYER_ID
             }, pingCallback);
             console.log("gameHash: "+GAME_HASH);
             console.log("playerId: "+PLAYER_ID);
         }
+        
+        
+        $('#chatForm').submit(function(event){
+        	var message = $('#chatInput').val();
+        	sendMessage("post",{
+        		key: "chat",
+        		gameHash: GAME_HASH,
+        		playerId: PLAYER_ID,
+        		msg: message
+        	});
+        	$('#chatInput').val("");
+        	return false;
+        });
+        
         
         //**CALLBACK FUNCTIONS**//
         function tryJoinGameCallback(responseText) {
@@ -240,7 +253,9 @@ $(document).ready(function() {
         	if(gameReady){
         		disableTRUE();
         		$('#gameAboutToStart').text("The game is about to start!");
-        		setTimeout(from3to4(),1500);
+        		console.log("in lobby ping callback before");
+        		setTimeout(function(){from3to4();},1500);
+        		console.log("in lobby ping callback after");
         		clearInterval(lobbyPingInterval);
         		
         	}
@@ -296,9 +311,21 @@ $(document).ready(function() {
         	var Server_update = updateChallengeArray[1]; 
         	var challengeID = updateChallengeArray[2];
         	
-        	//If the client is not up to date with the server, show updateMsg
+        	//If the client is not up to date with the server, show updateMsg or update chat
         	if(Client_update != Server_update){
-        		displayMessages(msg.split("~"));
+        		var messages = msg.split("~");
+        		console.log("IN PING");
+        		console.log(msg);
+        		
+        		if(messages[0] == "&"){
+        			console.log("ran displayChat");
+        			displayChat(messages);
+        		}
+        		else{
+        			console.log("ran display messages");
+        			displayMessages(messages);
+        		}
+        		
         		Client_update = Server_update;
         	}
         	
@@ -393,6 +420,7 @@ $(document).ready(function() {
         	lobbyPingInterval = setInterval(lobbyPing, 500 );
         };
         function from3to4(){
+        	console.log("in the 3 to 4");
         	$("#gameLobby").attr("hidden","true");
         	$("#gameBoard").removeAttr("hidden");
         	pingInterval = setInterval( ping, 500 );
@@ -421,6 +449,12 @@ $(document).ready(function() {
         	}, 2000);
           	
         };
+        
+        //Takes the name and message of person, displays it in the chat log
+        function displayChat(messageArray){
+        	console.log("In the displayChat Method: "+"<b>"+messageArray[1]+": </b>"+messageArray[2]);
+        	$('#innerChat').append("<b>"+messageArray[1]+": </b>"+messageArray[2]+"<br>");
+        }
         
         
 });
