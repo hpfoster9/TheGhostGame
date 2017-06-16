@@ -140,7 +140,7 @@ public class Game {
 	//Checks if all players are ready
 	public boolean gameReady(){
 		for(Player p: players){
-			if(!p.isReady() || players.size() == 0)
+			if(!p.isReady() || players.size() <= 1)
 				return false;
 		}
 		return true;

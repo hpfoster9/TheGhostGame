@@ -16,7 +16,11 @@
         <link rel="stylesheet" href="css/flipclock.css" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/flipclock/0.7.8/flipclock.min.js"></script>
         
-      
+      <audio id="ghostSong" loop >
+      <source src="ghost.ogg" type="audio/ogg">
+      	<source src="ghost.wav" type="audio/wav">
+      	
+      </audio>
     </head>
     <body>
     
@@ -94,7 +98,7 @@
             <br/>
             <div id="timerContainer"> 
             </div>
-            <div id="rulesContainer"> 
+            <div id="rulesContainer"> RULES
             </div>
             <div id="playersContainerLobby">
                 
@@ -104,6 +108,8 @@
                 </div>
             </div>
             <div  id="ads" > 
+            <img hidden id="sound1" class="picSound" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Speaker_Icon.svg/2000px-Speaker_Icon.svg.png" alt="Smiley face" height="50px" width="50px">
+            <img  id="mute1" class="picMute" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Mute_Icon.svg/2000px-Mute_Icon.svg.png" alt="Smiley face" height="50px" width="50px">
             </div>
             <div id="outerMsgContainerLobby">
                 <div id="innerMsgContainerLobby">
@@ -120,7 +126,7 @@
                     </div>
                 </div>
                 
-                        <button type="submit" class="btn btn-primary" id="readyUp">Ready Up!</button>
+                        <button type="submit" class="btn btn-primary" id="readyUp">I'm Ready!</button>
 
             </div>
         </div>
@@ -134,9 +140,11 @@
             <h1 class="title">The Ghost Game</h1>
             <br/>
             <div id="timerContainer"> 
-            <div class='clock' style="zoom: 0.9;"></div>
+            <div class='clock' style="zoom: 0.8;"></div>
             </div>
-            <div id="rulesContainer"> 
+            <div id="rulesContainer2"> 
+            RULES
+            
             </div>
             <div id="playersContainer">
                 <!-- *****PLAYER LIST***** -->
@@ -146,6 +154,9 @@
                 </div>
             </div>
             <div  id="ads" > 
+            <img hidden id="sound2" class="picSound" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Speaker_Icon.svg/2000px-Speaker_Icon.svg.png" alt="Smiley face" height="50px" width="50px">
+            <img  id="mute2" class="picMute" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Mute_Icon.svg/2000px-Mute_Icon.svg.png" alt="Smiley face" height="50px" width="50px">
+            
             </div>
             <div id="outerMsgContainer">
                 <div id="innerMsgContainer">
@@ -176,47 +187,6 @@
                                     </div>
                                     <!-- /input-group -->
                                 </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                
-                
-                <!-- Modal -->
-                <div class="modal fade" id="myModal2" role="dialog">
-                    <div class="modal-dialog">
-                        <!-- Modal content-->
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                
-                                <h4 class="modal-title">The objective of Ghost is to be the last man standing. </h4>
-                            </div>
-                            <div class="modal-body">
-                                Objective:
-	
- 
-<b>How to Win:</b><br>
-	Each round players will take turns adding letters to a word. You should try to add a letter that continues but does not complete a word. For example: If it was your turn and the string of letters so far were “CHAS”, you would lose a life if you put and “E” because it complets the word “CHASE” but would not if you put “I” because “CHASING” could be spelled. If instead you had put “Q” you would also lose a life because no word can be spelled when the first five letters are “CHASQ”. Last man remaining with a life left wins.
- <br>
-<b>Rules:</b><br>
-<ol>
-<li>Before the game starts the creator of the game will enter the settings...This includes the time for each move and the number of lives each player has.
-</li><li>When it is a player's turn they have a either 15, 30, or 45 seconds to make a move
-</li><li>Each turn a player can either put a letter, click “Challenge”, or click “That’s a word!”
-</li><li>Failure to make a move in the given time will result in a lost life
-</li><li>If a player puts down a letter it is the next player’s turn
-</li><li>If a player clicks “Challenge” the previous player has to spell the word they were thinking of
-</li><li>Failure to spell a word will result in a lost life
-</li><li>A correct spelling of word that does not start with the letters on the screen will result in a lost life
-</li><li>If the player being challenged does spell a word that begins with the letters on the screen the challenger loses a life
-</li><li>If a player clicks “That’s a word!”, believing the letter the previous player entered completes a word, the game will either say it is or is not a word. If it is a word the previous player will lose a life. If it is not a word the player who clicked “That’s a word!” will lose a life.
-</li><li>Whoever clicks “Challenge” or “That’s a word!” Will go first next round.
-</li><li>For a word to be valid it must be at least four letters in length and cannot be an uncommon proper noun
-</li><li>Once a player runs out of lives the player is removed from the game
-</li><li>This process continues until only one player remains </li>
- </ol>
-                                
                             </div>
                         </div>
                     </div>
@@ -260,5 +230,48 @@
                 </form>
             </div>
         </div>
+        
+                <!-- Modal -->
+                <div class="modal fade" id="myModal2" role="dialog">
+                    <div class="modal-dialog">
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                
+                                <h4 class="modal-title">Ghost</h4>
+                            </div>
+                            <div class="modal-body">
+                                <b>Objective:</b>
+                               <p> The objective of Ghost is to be the last man standing. </p>
+	
+ 
+<b>How to Win:</b><br>
+	<p>Each round players will take turns adding letters to a word. You should try to add a letter that continues but does not complete a word. For example: If it was your turn and the string of letters so far were “CHAS”, you would lose a life if you put and “E” because it complets the word “CHASE” but would not if you put “I” because “CHASING” could be spelled. If instead you had put “Q” you would also lose a life because no word can be spelled when the first five letters are “CHASQ”. Last man remaining with a life left wins.</p>
+ <br>
+<b>Rules:</b><br>
+<ol>
+<li>Before the game starts the creator of the game will enter the settings...This includes the time for each move and the number of lives each player has.
+</li><li>When it is a player's turn they have a either 15, 30, or 45 seconds to make a move
+</li><li>Each turn a player can either put a letter, click “Challenge”, or click “That’s a word!”
+</li><li>Failure to make a move in the given time will result in a lost life
+</li><li>If a player puts down a letter it is the next player’s turn
+</li><li>If a player clicks “Challenge” the previous player has to spell the word they were thinking of
+</li><li>Failure to spell a word will result in a lost life
+</li><li>A correct spelling of word that does not start with the letters on the screen will result in a lost life
+</li><li>If the player being challenged does spell a word that begins with the letters on the screen the challenger loses a life
+</li><li>If a player clicks “That’s a word!”, believing the letter the previous player entered completes a word, the game will either say it is or is not a word. If it is a word the previous player will lose a life. If it is not a word the player who clicked “That’s a word!” will lose a life.
+</li><li>Whoever clicks “Challenge” or “That’s a word!” Will go first next round.
+</li><li>For a word to be valid it must be at least four letters in length and cannot be an uncommon proper noun
+</li><li>Once a player runs out of lives the player is removed from the game
+</li><li>This process continues until only one player remains </li>
+ </ol>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                
+                
     </body>
 </html>

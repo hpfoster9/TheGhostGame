@@ -7,6 +7,7 @@ body{
 	padding:0; 
 	height:100%;
 }
+
 .title{
 	color: #E1E1E1; 
 	font-size: 48px; 
@@ -58,6 +59,12 @@ footer{
 	width:100%;
 	height:60px; 
 	background:#E1E1E1;
+}
+#msg{
+	text-align: center;
+	font-size: 32px;
+	padding-top: 10px;
+	color: #E1E1E1;
 }
 #outerCreate{
 	margin-top: 15px;
@@ -118,7 +125,10 @@ footer{
 	color: #4B4B4B; 
 	border-color: #4B4B4B;
 }
-#rulesContainer{
+#rulesContainer, #rulesContainer2{
+	font-weight: 700;
+	font-size: 24px;
+	padding-top:10px;
 	text-align: center; 
 	border-radius: 5px; 
 	height: 15vmin; 

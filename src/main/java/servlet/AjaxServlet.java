@@ -381,13 +381,24 @@ public class AjaxServlet extends HttpServlet {
 		String realWord = game.getWord().toLowerCase();
 		
 		//If the inputed word is a word and it starts with the word on the board
-		if(WordList.contains(testWord) && testWord.startsWith(realWord)){
-			if(curr.decreaseLives()){
-				game.setLosingId(curr.getID());
-				game.removePlayer(game.findPlayer(curr.getID()));
-				game.setTurn(game.findPlayer(game.getPreviousPlayer().getID()));
+		if(WordList.contains(testWord)){
+			if(testWord.startsWith(realWord)){
+				if(curr.decreaseLives()){
+					game.setLosingId(curr.getID());
+					game.removePlayer(game.findPlayer(curr.getID()));
+					game.setTurn(game.findPlayer(game.getPreviousPlayer().getID()));
+				}
+				game.setUpdateMsg(curr.getName()+ " challenges "+prev.getName()+"~"+testWord.toUpperCase()+" is a word~"+curr.getName()+" lost a life");
 			}
-			game.setUpdateMsg(curr.getName()+ " challenges "+prev.getName()+"~"+testWord.toUpperCase()+" is a word~"+curr.getName()+" lost a life");
+			else{
+				if(prev.decreaseLives()){
+					
+					game.setLosingId(prev.getID());
+					game.removePlayer(game.findPlayer(prev.getID()));
+					
+				}
+				game.setUpdateMsg(curr.getName()+ " challenges "+prev.getName()+"~Although "+testWord.toUpperCase()+" is a word,~It does not begin with "+game.getWord()+"~"+prev.getName()+" lost a life");
+			}
 		}
 		//The word isn't a word, so decrement previous player's lives
 		else{

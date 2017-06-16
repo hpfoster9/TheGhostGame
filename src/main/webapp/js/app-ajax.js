@@ -161,26 +161,30 @@ $(document).ready(function() {
         
         //Runs when user presses "That's a word!"
         $('#checkWord').click(function(event) {
-        	sendMessage("get",{
-                key: "checkWord",
-                gameHash: GAME_HASH
-        	});
-        	timerOn = false;
-			clock.setTime(0);
-			clearInterval(countdown);
-            
+        	if($('#mainMsg').text().length > 3){
+	        	sendMessage("get",{
+	                key: "checkWord",
+	                gameHash: GAME_HASH
+	        	});
+	        	timerOn = false;
+				clock.setTime(0);
+				clearInterval(countdown);
+				hadUpdate = true;
+        	}
         });
         
         //Runs when user sends challenge request
         $('#challengeButton').click(function(event) {
-        	
-            sendMessage("post",{
-                key: "challengeRequest",
-                gameHash: GAME_HASH
-        	}, challengeRequestCallback);
-            timerOn = false;
-			clock.setTime(0);
-			clearInterval(countdown);
+        	if($('#mainMsg').text().length > 0){
+	            sendMessage("post",{
+	                key: "challengeRequest",
+	                gameHash: GAME_HASH
+	        	}, challengeRequestCallback);
+	            timerOn = false;
+				clock.setTime(0);
+				clearInterval(countdown);
+				hadUpdate = true;
+        	}
         });
         
         //Runs when the user responds to the challenge request
@@ -199,19 +203,7 @@ $(document).ready(function() {
             return false;
         });
         
-        //if the user presses the 'X' in the modal ******************STILL NEED TO UPDATE THIS SERVERSIDE****************************
-        $('#modalX').click(function(event) {
-        	
-        	$('#challengeInput').val("");
-        	//Sends the error and gameID
-        	sendMessage("post",{
-                key: "challengeResponseError",
-                word: "%ERROR%",
-                gameHash: GAME_HASH
-        	});
-            //Closes the popup window
-            $('#myModal').modal('hide');
-        });
+       
         
         //Every 500ms ping the server to update word, turn, and deathCounter
         function ping(){
@@ -244,7 +236,7 @@ $(document).ready(function() {
         function tryJoinGameCallback(responseText) {
     		//If the game couldn't be found by the servlet, notify user
     		if(responseText.length < 1 || parseInt(responseText) == -1){
-    			$('#msg').text("Your input was invalid or game didn't exist");
+    			$('#msg').text("That game doesn't exist");
     			GAME_HASH = "";
     		}
     		//If the game is found, let user move to the next screen
@@ -406,6 +398,7 @@ $(document).ready(function() {
     			disableFALSE();
     			if(!hadUpdate){
     				console.log("did not have a update");
+    				console.log("RAN TIMER BC DIDN'T HAVE UPDATE AND WAS TURN");
     				tryTimer();
     			}
     		}
@@ -581,7 +574,25 @@ $(document).ready(function() {
         	$('#innerChat').append("<b>"+messageArray[1]+": </b>"+messageArray[2]+"<br>");
         }
         
-        /*$('#rulesContainer').click(function(){
+        $('#rulesContainer').click(function(){
         	$("#myModal2").modal({backdrop: "true"});
-        });*/
+        });
+        $('#rulesContainer2').click(function(){
+        	$("#myModal2").modal({backdrop: "true"});
+        });
+        
+        $('.picSound').click(function(){
+        	document.getElementById("ghostSong").pause();
+        	$("#sound1").attr("hidden","true");
+        	$("#sound2").attr("hidden","true");
+        	$("#mute1").removeAttr("hidden");
+        	$("#mute2").removeAttr("hidden");
+        });
+        $('.picMute').click(function(){
+        	document.getElementById("ghostSong").play();
+        	$("#mute1").attr("hidden","true");
+        	$("#mute2").attr("hidden","true");
+        	$("#sound1").removeAttr("hidden");
+        	$("#sound2").removeAttr("hidden");
+        });
 });
