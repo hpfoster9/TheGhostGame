@@ -26,8 +26,18 @@ public class Game {
 	//Keeps track of turn through index in the "players" list
 	private int TURN;
 	
+	private int time;
+	private int lives;
+	
 	//Most recent Update Message
 	private String updateMsg;
+	
+	//Keeps track of how many inactive counters the player has
+	private int deadCounter;
+	
+	
+	private String losingId = "false";
+	private String winningId = "false";
 	
 	/*
 	     This is an index of the most recent update, it is incremented every time there is a 
@@ -48,6 +58,7 @@ public class Game {
 		this.updateMsg = "";
 		this.updateIndex = 0;
 		this.challengeID = "false";
+		this.deadCounter = 0;
 	}
 	
 	
@@ -62,8 +73,26 @@ public class Game {
 		return password;
 	}
 	
+	/*
+    SETTINGS METHODS
+	*/
+	public void setTime(int seconds){
+		time = seconds;
+	}
+	public int getTime(){
+		return time;
+	}
 	
+	public void setLives(int L){
+		lives = L;
+	}
+	public int getLives(){
+		return lives;
+	}
 	
+	public void setTurn(int index){
+		TURN = index;
+	}
 	/*
   	    PLAYER METHODS
 	*/
@@ -77,8 +106,8 @@ public class Game {
 		return -1;
 	}
 	//Add a new player by name and then advance the counter by 1
-	public void addPlayer(String name) throws NoSuchAlgorithmException{
-		players.add(new Player(name, AjaxServlet.md5("p"+Integer.toString(COUNTER)).substring(0, 6)));
+	public void addPlayer(String name, int lives) throws NoSuchAlgorithmException{
+		players.add(new Player(name, AjaxServlet.md5("p"+Integer.toString(COUNTER)).substring(0, 6), lives));
 		COUNTER++;
 	}
 	//Returns all players within a game
@@ -111,10 +140,14 @@ public class Game {
 	//Checks if all players are ready
 	public boolean gameReady(){
 		for(Player p: players){
-			if(!p.isReady())
+			if(!p.isReady() || players.size() == 0)
 				return false;
 		}
 		return true;
+	}
+	//Removes the selected player
+	public void removePlayer(int index){
+		players.remove(index);
 	}
 	
 	
@@ -141,6 +174,19 @@ public class Game {
         else{
         	return false;
         }
+	}
+	
+	public void setLosingId(String str){
+		losingId = str;
+	}
+	public String getLosingId(){
+		return losingId;
+	}
+	public void setWinningId(String str){
+		winningId = str;
+	}
+	public String getWinningId(){
+		return winningId;
 	}
 	
 	
@@ -219,5 +265,27 @@ public class Game {
 	}
 	public String getHash(){
 		return gameHash;
+	}
+	
+	
+	/*
+    GAME INACTIVITY METHODS
+	*/
+	//Increase the death counter by one, if the user has been unresponsive remove them from the game
+	public boolean addDead(){
+		deadCounter++;
+		System.out.println("IN ADD DEATH");
+		System.out.println("In game "+gameID+" deathcounter went from "+(deadCounter-1)+" to "+deadCounter);
+		if(deadCounter > 4){
+			return true;
+		}
+		return false;
+	}
+	//If the player shows signs of being active, it will reset the death counter
+	public void resetDeath(){
+		deadCounter = 0;
+	}
+	public int getDeath(){
+		return deadCounter;
 	}
 }

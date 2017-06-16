@@ -15,8 +15,8 @@ public class Player {
 	//Keeps track of if the player is ready
 	private boolean ready;
 	
-	public Player(String n, String hash){
-		this.lives = 5;
+	public Player(String n, String hash, int lives){
+		this.lives = lives;
 		this.playerID = hash;
 		this.name = n;
 		this.deadCounter = 0;
@@ -35,8 +35,12 @@ public class Player {
 	public String getID(){
 		return playerID;
 	}
-	public void decreaseLives() {
+	public boolean decreaseLives() {
 		lives --;
+		if(lives <= 0){
+			return true;
+		}
+		return false;
 	}
 	public boolean isReady(){
 		return ready;
@@ -50,12 +54,13 @@ public class Player {
 	    PLAYER INACTIVITY METHODS
 	*/
 	//Increase the death counter by one, if the user has been unresponsive remove them from the game
-	public void addDead(){
+	public boolean addDead(){
 		deadCounter++;
-		if(deadCounter > 3){
-			System.out.println(name+" is DEAD");
-			//Remove the player from the game
+		if(deadCounter > 2){
+			System.out.println(name+" IS DEAD");
+			return true;
 		}
+		return false;
 	}
 	//If the player shows signs of being active, it will reset the death counter
 	public void resetDeath(){

@@ -8,20 +8,15 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <link rel="stylesheet" href="css/mycss.css">
+        
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <script src="js/app-ajax.js" type="text/javascript"></script>
         
+        <link rel="stylesheet" href="css/flipclock.css" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/flipclock/0.7.8/flipclock.min.js"></script>
         
-        
-        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js "></script>
-		<script>
-		  (adsbygoogle = window.adsbygoogle || []).push({
-		    google_ad_client: "ca-pub-5973766479001836",
-		    enable_page_level_ads: true
-		  });
-		</script>
-        
+      
     </head>
     <body>
     
@@ -30,6 +25,7 @@
         <div id="hostJoin" >
             <h1 class="title">The Ghost Game</h1>
             <br/>
+            
             <form id="joinForm">
                 <div class="input-group" id="hostJoinInnerDiv">
                     <input type="text" class="form-control" id="idInput" placeholder="Game ID">
@@ -51,18 +47,39 @@
             <br>
             <div id="namePassContainer">
                 <form id="namePasswordForm" >
+                <div id="createSettings" hidden>
+	                <div class="form-group row">
+	                        <div class="col-sm-9">
+			                    <label for="secondsInput" id="secondsLabel">Seconds per round:</label>
+							      <select class="form-control" id="secondsInput">
+							        <option>15</option>
+							        <option>30</option>
+							        <option>45</option>
+							        <option>60</option>
+							      </select>
+							    </div>
+	                    	</div>
+				      <div class="form-group row">
+					      <div class="col-sm-9">
+					      <label for="livesInput" id="livesLabel">Lives:</label>
+						    <input value=5 class="form-control" type="number" id="livesInput">
+						  </div>
+					  </div>
+				</div>
                     <div class="form-group row" >
-                        <div class="col-sm-10">
+                        <div class="col-sm-9">
                             <input type="text" class="form-control" id="nameInput" placeholder="Player Name">
                         </div>
                     </div>
                     <div class="form-group row">
-                        <div class="col-sm-10">
+                        <div class="col-sm-9">
                             <input type="password" class="form-control" id="passwordInput" placeholder="Game Password">
                         </div>
                     </div>
+                    
+				      
                     <div class="form-group row" id="namePassSubmitContainer">
-                        <div class="col-sm-10">
+                        <div class="col-sm-7">
                             <button type="submit" class="btn btn-primary" id="submitNamePassword">Join Game</button>
                         </div>
                     </div>
@@ -117,6 +134,7 @@
             <h1 class="title">The Ghost Game</h1>
             <br/>
             <div id="timerContainer"> 
+            <div class='clock' style="zoom: 0.9;"></div>
             </div>
             <div id="rulesContainer"> 
             </div>
@@ -134,6 +152,8 @@
                     <div id="mainMsg"></div>
                     <div id="updateMsg">
                     </div>
+                    <div id="win" hidden>You won!</div>
+                    <div id="lose" hidden>You have lost :(</div>
                     <p id="errorMsg"></p>
                 </div>
                 <!-- Modal -->
@@ -142,7 +162,7 @@
                         <!-- Modal content-->
                         <div class="modal-content">
                             <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" id="modalX">×</button>
+                                
                                 <h4 class="modal-title">You've been challenged</h4>
                             </div>
                             <div class="modal-body">
@@ -160,6 +180,51 @@
                         </div>
                     </div>
                 </div>
+                
+                
+                
+                <!-- Modal -->
+                <div class="modal fade" id="myModal2" role="dialog">
+                    <div class="modal-dialog">
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                
+                                <h4 class="modal-title">The objective of Ghost is to be the last man standing. </h4>
+                            </div>
+                            <div class="modal-body">
+                                Objective:
+	
+ 
+<b>How to Win:</b><br>
+	Each round players will take turns adding letters to a word. You should try to add a letter that continues but does not complete a word. For example: If it was your turn and the string of letters so far were “CHAS”, you would lose a life if you put and “E” because it complets the word “CHASE” but would not if you put “I” because “CHASING” could be spelled. If instead you had put “Q” you would also lose a life because no word can be spelled when the first five letters are “CHASQ”. Last man remaining with a life left wins.
+ <br>
+<b>Rules:</b><br>
+<ol>
+<li>Before the game starts the creator of the game will enter the settings...This includes the time for each move and the number of lives each player has.
+</li><li>When it is a player's turn they have a either 15, 30, or 45 seconds to make a move
+</li><li>Each turn a player can either put a letter, click “Challenge”, or click “That’s a word!”
+</li><li>Failure to make a move in the given time will result in a lost life
+</li><li>If a player puts down a letter it is the next player’s turn
+</li><li>If a player clicks “Challenge” the previous player has to spell the word they were thinking of
+</li><li>Failure to spell a word will result in a lost life
+</li><li>A correct spelling of word that does not start with the letters on the screen will result in a lost life
+</li><li>If the player being challenged does spell a word that begins with the letters on the screen the challenger loses a life
+</li><li>If a player clicks “That’s a word!”, believing the letter the previous player entered completes a word, the game will either say it is or is not a word. If it is a word the previous player will lose a life. If it is not a word the player who clicked “That’s a word!” will lose a life.
+</li><li>Whoever clicks “Challenge” or “That’s a word!” Will go first next round.
+</li><li>For a word to be valid it must be at least four letters in length and cannot be an uncommon proper noun
+</li><li>Once a player runs out of lives the player is removed from the game
+</li><li>This process continues until only one player remains </li>
+ </ol>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                
+                
+                
                 <div style="padding-top: 3vh; clear: both;" >
                     <div  style="margin-left: 10%; width: 20%; float: left;" >
                         <button type="submit" class="btn btn-primary" id="checkWord">That's a word!</button>

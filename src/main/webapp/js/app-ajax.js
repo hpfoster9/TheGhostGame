@@ -1,5 +1,17 @@
 $(document).ready(function() {
+		var clock = $('.clock').FlipClock({
+			clockFace: 'counter',
+			countdown: true
+			
+		});
 		
+			
+		clock.setTime(0);
+		
+		var countdown;
+		var timerOn = false;
+		var hadUpdate = false;
+		var maxTime = -1;
 		//Used to identify the User's game by ID
 		var GAME_HASH;
 		//Used to identify the User by ID
@@ -14,16 +26,16 @@ $(document).ready(function() {
 			keys= window.location.href.split("?")[1];
 		}
 		if(keys.length > 1 && keys.substring(0,3) == "id="){
-			console.log("trying to use the fancy url");
+			//console.log("trying to use the fancy url");
 			var gameH = keys.split("=")[1];
-			console.log("gameid test: "+gameH);
+			//console.log("gameid test: "+gameH);
 		
 			sendMessage("get", {
         		key: "tryJoinGame",
                 gameHash : gameH
             }, tryJoinGameCallback);
 		}
-		console.log(window.location.href.split("?")[1]);
+		//console.log(window.location.href.split("?")[1]);
 		
 		
 		//Default post request to load the word list
@@ -48,7 +60,7 @@ $(document).ready(function() {
 					$.get('AjaxServlet', postBody, callbackFunction);
 				}
 			}
-			console.log("sent a "+type+"request: "+postBody.key);
+			//console.log("sent a "+type+"request: "+postBody.key);
 		}
 		
 		//Runs when user Joins a game through entering a gameID
@@ -60,11 +72,12 @@ $(document).ready(function() {
                 var gameId = $('#idInput').val();
                 $('#idInput').val("");
                 
-                //Sends getRequest to servlet, to make sure that game exists
-                sendMessage("get", {
-            		key: "tryJoinGame",
-                    gameId : gameId
-                }, tryJoinGameCallback);
+	                //Sends getRequest to servlet, to make sure that game exists
+	                sendMessage("get", {
+	            		key: "tryJoinGame",
+	                    gameId : gameId
+	                }, tryJoinGameCallback);
+               
                 
                 return false;
             });
@@ -85,23 +98,40 @@ $(document).ready(function() {
         	$('#passwordInput').val("");
         	/* Sends postRequest to check if game exists and
         	 *  from there add new player to either new game or existing one */
-            sendMessage("post",{
-                key: "namePassword",
-                name: n,
-                password: pass,
-                gameHash: GAME_HASH
-            }, namePasswordCallback);
-            
+        	if($('#namePassTitle').text().substring(0,4) == "Join"){
+	            sendMessage("post",{
+	                key: "namePassword",
+	                name: n,
+	                password: pass,
+	                gameHash: GAME_HASH
+	            }, namePasswordCallback);
+        	}
+        	else{
+        		console.log($('#namePassTitle').text().substring(0,4));
+        		var lives = $('#livesInput').val();
+        		var seconds = $('#secondsInput').val();
+        		console.log("l: "+lives);
+        		console.log("s: "+seconds);
+        		sendMessage("post",{
+	                key: "namePassword",
+	                name: n,
+	                password: pass,
+	                gameHash: GAME_HASH,
+	                lives: lives,
+	                seconds: seconds
+	            }, namePasswordCallback);
+        		
+        	}
             return false;
         });
         
         //Runs at an interval once inside the lobby
         function lobbyPing(){
-        	console.log("lobby ping");
+        	//console.log("lobby ping");
         	sendMessage("get",{
         		key: "lobbyPing",
         		gameHash: GAME_HASH,
-        		
+        		playerId: PLAYER_ID
         	}, lobbyPingCallback);
         }
         
@@ -123,7 +153,9 @@ $(document).ready(function() {
                 letter: letter.toUpperCase(),
                 gameHash: GAME_HASH
         	}, sendLetterCallback);
-        	
+        	timerOn = false;
+			clock.setTime(0);
+			clearInterval(countdown);
             return false;
         });
         
@@ -133,16 +165,22 @@ $(document).ready(function() {
                 key: "checkWord",
                 gameHash: GAME_HASH
         	});
+        	timerOn = false;
+			clock.setTime(0);
+			clearInterval(countdown);
             
         });
         
         //Runs when user sends challenge request
         $('#challengeButton').click(function(event) {
+        	
             sendMessage("post",{
                 key: "challengeRequest",
                 gameHash: GAME_HASH
         	}, challengeRequestCallback);
-        	
+            timerOn = false;
+			clock.setTime(0);
+			clearInterval(countdown);
         });
         
         //Runs when the user responds to the challenge request
@@ -183,8 +221,8 @@ $(document).ready(function() {
             	gameHash: GAME_HASH,
             	playerId: PLAYER_ID
             }, pingCallback);
-            console.log("gameHash: "+GAME_HASH);
-            console.log("playerId: "+PLAYER_ID);
+            //console.log("gameHash: "+GAME_HASH);
+            //console.log("playerId: "+PLAYER_ID);
         }
         
         
@@ -200,6 +238,7 @@ $(document).ready(function() {
         	return false;
         });
         
+       
         
         //**CALLBACK FUNCTIONS**//
         function tryJoinGameCallback(responseText) {
@@ -219,10 +258,11 @@ $(document).ready(function() {
     	}
         
         function createGameCallback(responseText) {
-        	console.log("responseText from create: "+responseText);
+        	//console.log("responseText from create: "+responseText);
         	GAME_HASH = responseText;
         	//Change namePass to Create and move to next screen
         	$('#namePassTitle').text("Created game at ID: "+GAME_HASH);
+        	$('#createSettings').removeAttr("hidden");
         	//Change screen method
         	from1to2();
         }
@@ -243,7 +283,7 @@ $(document).ready(function() {
         }
         
         function lobbyPingCallback(responseText){
-        	console.log("lobbyCallback response: "+responseText);
+        	//console.log("lobbyCallback response: "+responseText);
         	var tempArray = responseText.split("|");
         	var playerList = tempArray[0].split(",");
         	var gameReady = eval(tempArray[1]);
@@ -253,9 +293,9 @@ $(document).ready(function() {
         	if(gameReady){
         		disableTRUE();
         		$('#gameAboutToStart').text("The game is about to start!");
-        		console.log("in lobby ping callback before");
+        		//console.log("in lobby ping callback before");
         		setTimeout(function(){from3to4();},1500);
-        		console.log("in lobby ping callback after");
+        		//console.log("in lobby ping callback after");
         		clearInterval(lobbyPingInterval);
         		
         	}
@@ -275,26 +315,30 @@ $(document).ready(function() {
 		}
 		
 		function challengeRequestCallback(responseText) {
-    		disableTRUE();
+			disableTRUE();
     	}
 		
 		function pingCallback(responseText) {
-        	console.log(responseText);
+        	//console.log(responseText);
         	//Splits the response into the word, turn id, and the players, and then the update text
-        	var temp = responseText.split("|");
+			var temp = responseText.split("|");
         	var wordTurnPlayersArray = temp[0].split(" ");
         	var updateChallengeArray = temp[1].split("*");
-        	console.log(wordTurnPlayersArray);
-        	console.log(updateChallengeArray);
+        	//console.log(wordTurnPlayersArray);
+        	//console.log(updateChallengeArray);
         	
         	//Uses the word, turn, and players to update client
-    		var word = wordTurnPlayersArray[0];
-    		var turnID = wordTurnPlayersArray[1];
-    		var turnIndex = wordTurnPlayersArray[2];
+        	var time = wordTurnPlayersArray[0];
+    		var word = wordTurnPlayersArray[1];
+    		var turnID = wordTurnPlayersArray[2];
+    		var turnIndex = wordTurnPlayersArray[3];
 
+    		if(maxTime == -1){
+    			maxTime = time;
+    		}
     		//get rid of everything but the players in the first array
-    		wordTurnPlayersArray.splice(0,3);
-    		console.log(wordTurnPlayersArray);
+    		wordTurnPlayersArray.splice(0,4);
+    		//console.log(wordTurnPlayersArray);
     		
     		//update the board with the new word
             $('#mainMsg').text(word);
@@ -310,49 +354,124 @@ $(document).ready(function() {
         	var msg = updateChallengeArray[0];
         	var Server_update = updateChallengeArray[1]; 
         	var challengeID = updateChallengeArray[2];
+        	var losingId = updateChallengeArray[3];
+        	var winningId = updateChallengeArray[4];
         	
-        	//If the client is not up to date with the server, show updateMsg or update chat
-        	if(Client_update != Server_update){
-        		var messages = msg.split("~");
-        		console.log("IN PING");
-        		console.log(msg);
-        		
-        		if(messages[0] == "&"){
-        			console.log("ran displayChat");
-        			displayChat(messages);
-        		}
-        		else{
-        			console.log("ran display messages");
-        			displayMessages(messages);
-        		}
-        		
-        		Client_update = Server_update;
-        	}
         	
         	
         	//If the client is the one being challenged, show the modal
         	if(challengeID == PLAYER_ID ){
         		$("#myModal").modal({backdrop: "static"});
         	}
+            var isTurn = false;
             
+        	
+        	
+        	
+            if(turnID == PLAYER_ID && challengeID == "false"){
+            	isTurn = true;
+            }
+            if(!isTurn){
+            	console.log("CLEARED THE COUNTDOWN");
+            	clearInterval(countdown);
+            }
+            console.log("made isTurn "+ isTurn);
+            
+            
+        	//If the client is not up to date with the server, show updateMsg or update chat
+        	if(Client_update != Server_update){
+        		hadUpdate = true;
+        		var messages = msg.split("~");
+        		//console.log("IN PING");
+        		//console.log(msg);
+        		
+        		if(messages[0] == "&"){
+        			//console.log("ran displayChat");
+        			displayChat(messages);
+        			hadUpdate = false;
+        		}
+        		else{
+        			console.log("ran display messages");
+        			displayMessages(messages, isTurn);
+        		}
+        		
+        		Client_update = Server_update;
+        	}
+        	
+        	console.log("hadUpdate = "+hadUpdate);
+        	
         	//If it is the client's turn and no one is being challenged, re-enable their inputs 
     		if(turnID == PLAYER_ID && challengeID == "false"){
+    			console.log("In the players turn if statement");
     			disableFALSE();
+    			if(!hadUpdate){
+    				console.log("did not have a update");
+    				tryTimer();
+    			}
     		}
+        	console.log("losing: "+losingId);
+        	console.log("winning: "+winningId);
+    		
+    		if(losingId == PLAYER_ID){
+    			$('#lose').removeAttr("hidden");
+    			clearInterval(pingInterval);
+    			
+    		}
+    		if(winningId == PLAYER_ID){
+    			$('#win').removeAttr("hidden");
+    			clearInterval(pingInterval);
+    		}
+    		
+    		
+    		console.log("*************************************************************************************************");
+    		
         }
 		
+		
+		
+		
+		
+		
         //** HELPER FUNCTIONS **//
+		function tryTimer(){
+			console.log("timerOn = "+timerOn);
+			if(!timerOn){
+				timerOn = true;
+				//Loooooop
+				clock.setTime(maxTime);
+				countdown = setInterval(function(){
+					console.log("timerOn = "+timerOn);
+					console.log("ran interval");
+					var Time = clock.getTime();
+					if(Time.time <= 0){
+						console.log("it stopped!");
+						sendMessage("post",{
+							key: "expired",
+							gameHash: GAME_HASH,
+							playerId: PLAYER_ID
+						});
+						timerOn = false;
+						disableTRUE();
+						
+					}
+					else{
+						console.log("Flipped it!");
+						clock.decrement();
+					}
+				},1000);
+			}
+		}
         //Updates the table of players within the lobby
 		function updateLobby(nameReady){
 			var tableHTML = "<thead><tr><th>Name</th><th>Ready</th></tr></thead> <tbody>";
 			for(i = 0; i<nameReady.length; i++){
-				console.log(nameReady);
+				//console.log(nameReady);
 				if(nameReady[i].length > 0){
 					var tempArray = nameReady[i].split(" ");
 					var name = tempArray[0];
 					var ready = tempArray[1];
-					console.log("Name: "+name);
-					console.log("Ready: "+ready);
+					//console.log("Name: "+name);
+					//console.log("Ready: "+ready);
 					if(ready == "true"){
 						var URL = "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Ski_trail_rating_symbol-green_circle.svg/240px-Ski_trail_rating_symbol-green_circle.svg.png";
 					}
@@ -420,7 +539,7 @@ $(document).ready(function() {
         	lobbyPingInterval = setInterval(lobbyPing, 500 );
         };
         function from3to4(){
-        	console.log("in the 3 to 4");
+        	//console.log("in the 3 to 4");
         	$("#gameLobby").attr("hidden","true");
         	$("#gameBoard").removeAttr("hidden");
         	pingInterval = setInterval( ping, 500 );
@@ -428,7 +547,7 @@ $(document).ready(function() {
         //This function uses recursion so the index keeps track of how many times the function is called
         setTimeoutIndex = 1;
         //Takes array and displays the messages waiting 2 seconds before switching to the next one
-        function displayMessages(msgArray){
+        function displayMessages(msgArray, isTurn){
         	//If its the first message, show the first element in the message array
         	if(setTimeoutIndex == 1){
         		$('#updateMsg').text(msgArray[0]);
@@ -445,6 +564,12 @@ $(document).ready(function() {
     			else{
     				$('#updateMsg').text("");
     				setTimeoutIndex = 1;
+    				if(isTurn){
+    					console.log("RAN THE TIMER AFTER THE MESSAGES FINISHED LOADING");
+    					tryTimer();
+    					
+    				}
+    				hadUpdate = false;
     			}
         	}, 2000);
           	
@@ -452,9 +577,11 @@ $(document).ready(function() {
         
         //Takes the name and message of person, displays it in the chat log
         function displayChat(messageArray){
-        	console.log("In the displayChat Method: "+"<b>"+messageArray[1]+": </b>"+messageArray[2]);
+        	//console.log("In the displayChat Method: "+"<b>"+messageArray[1]+": </b>"+messageArray[2]);
         	$('#innerChat').append("<b>"+messageArray[1]+": </b>"+messageArray[2]+"<br>");
         }
         
-        
+        /*$('#rulesContainer').click(function(){
+        	$("#myModal2").modal({backdrop: "true"});
+        });*/
 });

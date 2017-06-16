@@ -29,6 +29,16 @@ body{
 	text-align: center; 
 	border-radius: 4px;
 }
+#win{
+	font-size: 42px;
+	color: #00DD00;
+	text-align: center;
+}
+#lose{
+	font-size: 42px;
+	color: #EE0000;
+	text-align: center;
+}
 #join{
 	margin-top: 10px; 
 	width: 250px;  
@@ -66,27 +76,21 @@ footer{
 }
 #namePassContainer{
 	border-radius: 5px; 
-	width: 30%; 
+	width: 25%; 
 	margin: auto; 
 	background-color: #E1E1E1; 
 	color: #4B4B4B; 
 	border-color: #4B4B4B; 
 	padding: 15px;
 }
-#nameInput{
+#passwordInput, #secondsInput, #secondsLabel, #livesInput, #livesLabel, #nameInput{
 	width: 100%; 
-	margin-left: 10%; 
-	margin-top: 10px;
-}
-#passwordInput{
-	width: 100%; 
-	margin-left: 10%;
+	margin-left: 15%;
 }
 #namePassSubmitContainer{
 	margin-bottom: 10px;
 }
-#submitNamePassword{
-	width: 250px;  
+#submitNamePassword{ 
 	text-align: center; 
 	background-color: #4B4B4B; 
 	color: white; 
@@ -94,7 +98,7 @@ footer{
 	font-weight: 800; 
 	font-size: 16px; 
 	width: 100%; 
-	margin-left: 10%;
+	margin-left: 35%;
 }
 
 
