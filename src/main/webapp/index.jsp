@@ -140,7 +140,7 @@
             <h1 class="title">The Ghost Game</h1>
             <br/>
             <div id="timerContainer"> 
-            <div class='clock' style="zoom: 0.8;"></div>
+            <div class='clock' style="zoom: 0.7; margin: auto;"></div>
             </div>
             <div id="rulesContainer2"> 
             RULES
