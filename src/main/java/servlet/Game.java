@@ -276,7 +276,7 @@ public class Game {
 		deadCounter++;
 		System.out.println("IN ADD DEATH");
 		System.out.println("In game "+gameID+" deathcounter went from "+(deadCounter-1)+" to "+deadCounter);
-		if(deadCounter > 4){
+		if(deadCounter > 10){
 			return true;
 		}
 		return false;

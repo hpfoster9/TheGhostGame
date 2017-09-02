@@ -56,7 +56,7 @@ public class Player {
 	//Increase the death counter by one, if the user has been unresponsive remove them from the game
 	public boolean addDead(){
 		deadCounter++;
-		if(deadCounter > 2){
+		if(deadCounter > 6){
 			System.out.println(name+" IS DEAD");
 			return true;
 		}
