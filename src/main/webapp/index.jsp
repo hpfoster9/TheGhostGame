@@ -11,7 +11,6 @@
         
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-        <script src="js/jquery.quickfit.js" type="text/javascript"></script>
         <script src="js/app-ajax.js" type="text/javascript"></script>
         
         <link rel="stylesheet" href="css/flipclock.css" />
@@ -140,15 +139,11 @@
         <div id="gameBoard" hidden >
             <h1 class="title">The Ghost Game</h1>
             <br/>
-            <div id="timerContainer" style="display: table;"> 
-           <p id="countdownP" style="width: 100%; height: 100%; font-size: 8vw; display: table-cell;
-    vertical-align: middle;
-           "></p>
+            <div id="timerContainer"> 
+            <div class='clock' style="zoom: 0.7; margin: auto;"></div>
             </div>
-            <div id="rulesContainer2" style="display: table;">
-            <p id="rulesP" style="width: 100%; height: 100%; font-size: 3vw; display: table-cell;
-    vertical-align: middle;
-            "> RULES </p>
+            <div id="rulesContainer2"> 
+            RULES
             
             </div>
             <div id="playersContainer">
@@ -277,6 +272,6 @@
                 </div>
                 
                 
-                <div id="hidden-resizer" style="visibility: hidden"></div>
+                
     </body>
 </html>
