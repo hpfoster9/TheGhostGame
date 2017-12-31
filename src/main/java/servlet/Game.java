@@ -149,6 +149,9 @@ public class Game {
 	public void removePlayer(int index){
 		players.remove(index);
 	}
+	public int getNumPlayers(){
+		return players.size();
+	}
 	
 	
 	/*

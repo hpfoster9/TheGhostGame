@@ -70,6 +70,9 @@ public class AjaxServlet extends HttpServlet {
 			case "lobbyPing":
 				lobbyPing(request, response);
 				break;
+			case "adminPing":
+				adminPing(request, response);
+				break;
 		}
 	}
     
@@ -282,6 +285,17 @@ public class AjaxServlet extends HttpServlet {
 		gameUpdateDeath(gameHash, request.getParameter("playerId"));
 		
 	}
+	public void adminPing(HttpServletRequest request, HttpServletResponse response) throws IOException{
+		String output = "";
+		for(int i = 0; i < gamePool.size(); i++){
+			Game g = gamePool.get(i);
+			String id = g.getHash();
+			int num = g.getNumPlayers();
+			output += id + " " + num + ",";
+		}
+		response.getWriter().write(output);
+	}
+	
 	//g
 	public void ping(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		//Gets gameID from params and uses it to find the game

@@ -28,7 +28,7 @@
     
     
         <div id="hostJoin" >
-            <h1 class="title">The Ghost Game</h1>
+            <h1 class="title" id="ghostTitle" onclick="window.location.href= window.location.href.replace('index','admin');")>The Ghost Game</h1>
             <br/>
             
             <form id="joinForm">
