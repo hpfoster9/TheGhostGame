@@ -20,7 +20,7 @@
       </audio>
    </head>
    <body>
-      <h1 class="title">The Ghost Game</h1>
+      <h1 class="title" id="ghostTitle" onclick="window.location.href= window.location.href.replace('admin','index');")>The Ghost Game</h1>
       <br/>
       <div id="timerContainer"> </div>
       <div id="rulesContainer"> RULES</div>
