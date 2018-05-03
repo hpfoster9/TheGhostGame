@@ -45,7 +45,7 @@ public class AjaxServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		System.out.println("Got a get: "+request.getParameter("key"));
+		
 		//Sets content type as default
 		response.setContentType("text/plain");
 		
@@ -82,13 +82,13 @@ public class AjaxServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		//Sets content type as default
 		response.setContentType("text/plain");
-		System.out.println("Got a post: "+request.getParameter("key"));
+		
 		
 		switch(request.getParameter("key")){
 			case "createGame": //post
 						try {
 							createGame(request, response);
-							System.out.println("Successfully made shit");
+							
 						} catch (NoSuchAlgorithmException e) {
 							e.printStackTrace();
 						}
@@ -131,63 +131,9 @@ public class AjaxServlet extends HttpServlet {
 		//initializes WordList if not already created
 		if(WordList.size() == 0){
 			compileWordList();
-			System.out.println("Made the wordlist");
+			
 			runTest();
 		}
-	}
-	
-	//Tests duplicates of hashes
-	public void runTest() throws NoSuchAlgorithmException{
-		String[] pArray = new String[5000]; 
-		String[] pDup = new String[4];
-		String pOutput = "";
-		
-		String[] gArray = new String[5000]; 
-		String[] gDup = new String[4];
-		String gOutput = "";
-		
-		for(int i = 0; i<5000; i++){
-			pArray[i] = md5("p"+i).substring(0,5);
-			gArray[i] = md5("g"+i).substring(0, 5);
-		}
-		
-		System.out.println("updated it");
-		System.out.println("finished making the test arrays");
-		//loop through pArray
-		for(int i = 0; i<pArray.length-1; i++){
-			pDup[0] = Integer.toString(i);
-			pDup[1] = pArray[i];
-			for(int j = i+1; j<pArray.length; j++){
-				pDup[2] = Integer.toString(j);
-				pDup[3] = pArray[j];
-				
-				if(pDup[1].equals(pDup[3])){
-					j = pArray.length;
-					i = pArray.length;
-					System.out.println("PlayerHash duplicate found at points: ("+pDup[0]+" , "+pDup[1]+") and ("+pDup[2]+" , "+pDup[3]+")");
-				}
-			}
-		}
-		
-		
-		
-		//loop through pArray
-		for(int i = 0; i<gArray.length-1; i++){
-			gDup[0] = Integer.toString(i);
-			gDup[1] = gArray[i];
-			for(int j = i+1; j<gArray.length; j++){
-				gDup[2] = Integer.toString(j);
-				gDup[3] = gArray[j];
-				
-				if(gDup[1].equals(gDup[3])){
-					j = gArray.length;
-					i = gArray.length;
-					System.out.println("GameHash duplicate found at points: ("+gDup[0]+" , "+gDup[1]+") and ("+gDup[2]+" , "+gDup[3]+")");
-					
-				}
-			}
-		}
-		
 	}
 	
 	
@@ -218,12 +164,12 @@ public class AjaxServlet extends HttpServlet {
 		else{
 			response.getWriter().write("");
 		}
-	}/////****Make sure the mehtod returns the game hash
+	}
 	
 	//p
 	public void namePassword(HttpServletRequest request, HttpServletResponse response) throws IOException{
 		int index = findGame(request.getParameter("gameHash"));
-		System.out.println("index "+index);
+		
 		Game game = gamePool.get(index);
 		String realPassword = game.getPassword();
 		String testPassword = request.getParameter("password");
@@ -267,7 +213,7 @@ public class AjaxServlet extends HttpServlet {
 	
 	//g
 	public void lobbyPing(HttpServletRequest request, HttpServletResponse response) throws IOException{
-		System.out.println("in lobbyPing function");
+		
 		String nameReady = "";
 		String gameHash = request.getParameter("gameHash");
 		Game game = gamePool.get(findGame(gameHash));
@@ -275,7 +221,7 @@ public class AjaxServlet extends HttpServlet {
 			nameReady += p.getName() + " " + p.isReady() +",";
 		}
 		nameReady +=  "|" + game.gameReady();
-		System.out.println("nameReady: "+nameReady);
+		
 		response.getWriter().write(nameReady);
 		
 		//update the Users' deathCounter
@@ -313,7 +259,7 @@ public class AjaxServlet extends HttpServlet {
 			//update the game's deathCounter
 			gameUpdateDeath(gameHash, request.getParameter("playerId"));
 		}
-			System.out.println("GAMEPOOL SIZE: "+gamePool.size());
+			
 	}
 	
 	//p
@@ -337,14 +283,14 @@ public class AjaxServlet extends HttpServlet {
 	public void checkWord(HttpServletRequest request, HttpServletResponse response){
 		//Gets the game
 		Game game = gamePool.get(findGame(request.getParameter("gameHash")));
-		System.out.println("checkWord: "+game.getWord());
+		
 		//Get current and previous players
 		if(game.getWord().length() > 0){
 			Player prev = game.getPreviousPlayer();
 			
 			Player curr = game.getPlayer(game.getTurnIndex());
-			System.out.println("prev: "+prev.getName());
-			System.out.println("curr: "+curr.getName());
+			
+			
 			if(game.checkWord()){
 				//The word is a word, so decrement previous players lives
 				if(prev.decreaseLives()){
@@ -437,14 +383,14 @@ public class AjaxServlet extends HttpServlet {
 	
 	//p
 	public void chat(HttpServletRequest request, HttpServletResponse response){
-		System.out.println("RAN THE CHAT FUNCTION");
+		
 		//Gets the game
 		Game game = gamePool.get(findGame(request.getParameter("gameHash")));
 		
 		Player player = game.getPlayer(game.findPlayer(request.getParameter("playerId")));
 		
 		game.setUpdateMsg("&~"+player.getName()+"~"+request.getParameter("msg"));
-		System.out.println(game.getUpdateMsg());
+		
 		game.incrementUpdateIndex();
 	}
 
@@ -560,18 +506,18 @@ public class AjaxServlet extends HttpServlet {
 	//Updates the deathCounters within the game
 	public void playerUpdateDeath(String gID, String pID){
 		Game game = gamePool.get(findGame(gID));
-		System.out.println("in player update death");
+		
 		//Finds the index for the current player
 		int pIndex = game.findPlayer(pID);
-		System.out.println("PlayerID: "+pID);
-		System.out.println("Player Index: "+pIndex);
-		System.out.println("Player Name: "+game.getPlayer(pIndex).getName() );
+		
+		
+		
 		ArrayList<Player> players = game.getPlayers();
 		
 		//If the player is the last in the ArrayList, add the death counter to the first Player
 		if(pIndex == players.size()-1 && players.size() > 1){
 			if(players.get(0).addDead()){
-				System.out.println("0 Trying to remove "+game.getPlayer(0).getName());
+				
 				game.removePlayer(0);
 				pIndex -- ;
 			}
@@ -580,7 +526,7 @@ public class AjaxServlet extends HttpServlet {
 		//As long as the player isn't the last, add a deathCounter on the next player
 		else if (players.size() > 1){
 			if(players.get(pIndex + 1).addDead()){
-				System.out.println("1 Trying to remove "+game.getPlayer(pIndex+1).getName());
+				
 				game.removePlayer(pIndex+1);
 				
 			}
@@ -597,14 +543,14 @@ public class AjaxServlet extends HttpServlet {
 	//Updates the deathCounter within the game
 		public void gameUpdateDeath(String gID, String pID){
 			Game game = gamePool.get(findGame(gID));
-			System.out.println("in game update death");
+			
 			//Finds the index for the current player
 			int pIndex = game.findPlayer(pID);
-			System.out.println("GameID: "+gID);
-			System.out.println("Game death counters: "+game.getDeath());
-			System.out.println("PlayerID: "+pID);
-			System.out.println("Player Index: "+pIndex);
-			System.out.println("Player Name: "+game.getPlayer(pIndex).getName() );
+			
+			
+			
+			
+			
 			ArrayList<Player> players = game.getPlayers();
 			
 			//finds the index of the game within the game pool
@@ -612,12 +558,12 @@ public class AjaxServlet extends HttpServlet {
 			
 			//only run this with the first player in each game
 			if(pIndex == 0){
-				System.out.println("******THE DEATH COUNTER FOR GAME "+gIndex+" is "+game.getDeath());
+				
 				//If the player is the last in the ArrayList, add the death counter to the first Player
 				if(gIndex == gamePool.size()-1 && gamePool.size() > 1){
 					Game nextGame = gamePool.get(0);
 					if(nextGame.addDead() && nextGame.getPlayers().size() == 1 && nextGame.gameReady()){
-						System.out.println("0 Trying to remove game: 0");
+						
 						gamePool.remove(0);
 						gIndex--;
 					}
@@ -626,8 +572,8 @@ public class AjaxServlet extends HttpServlet {
 				else if (gamePool.size() > 1 ){
 					Game nextGame = gamePool.get(gIndex+1);
 					if(nextGame.addDead() && nextGame.getPlayers().size() == 1 && nextGame.gameReady()){
-						System.out.println("1 Trying to remove game: "+(gIndex+1));
-						System.out.println("BC game "+(gIndex+1)+ " has a death counter of "+nextGame.getDeath());
+						
+						
 						gamePool.remove(gIndex+1);
 					}
 				}

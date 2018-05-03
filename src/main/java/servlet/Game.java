@@ -169,8 +169,6 @@ public class Game {
 	//Returns whether or not the WORD is within the word list
 	public boolean checkWord() {
 		String lowerWord = WORD.toLowerCase();
-		System.out.println("Checkword test: "+lowerWord);
-		System.out.println(AjaxServlet.WordList.size());
         if(AjaxServlet.WordList.contains(lowerWord)){
         	return true;
         }
@@ -277,8 +275,6 @@ public class Game {
 	//Increase the death counter by one, if the user has been unresponsive remove them from the game
 	public boolean addDead(){
 		deadCounter++;
-		System.out.println("IN ADD DEATH");
-		System.out.println("In game "+gameID+" deathcounter went from "+(deadCounter-1)+" to "+deadCounter);
 		if(deadCounter > 10){
 			return true;
 		}

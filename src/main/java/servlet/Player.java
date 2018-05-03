@@ -57,7 +57,6 @@ public class Player {
 	public boolean addDead(){
 		deadCounter++;
 		if(deadCounter > 6){
-			System.out.println(name+" IS DEAD");
 			return true;
 		}
 		return false;
